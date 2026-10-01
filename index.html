@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html>
-
-<body>
-The content of the body element is displayed in your browser.
-</body>
-
-</html>
-<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ================= SEO & Social Media Tags ================= -->
     <title>مسارك إلي الإسكان - دليلك العقاري</title>
+    <meta name="description" content="اعرف شقتك المناسبة من طرح الإسكان الجديد (هيئة المجتمعات العمرانية) في 3 ثواني مع مسارك للاستشارات العقارية.">
+    <meta property="og:title" content="دليلك لشقق الإسكان - مسارك للاستشارات العقارية">
+    <meta property="og:description" content="أداة ذكية لمعرفة الشقة المناسبة لشريحة دخلك من طرح الإسكان بنظام الإيجار المنتهي بالتملك.">
+    <meta property="og:type" content="website">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة التقاط الشاشة (Screenshot) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
@@ -21,7 +24,6 @@ The content of the body element is displayed in your browser.
             from { opacity: 0; transform: translateY(20px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
-        /* ألوان مسارك إلي الإسكان */
         .brand-blue { color: #0f2e5a; }
         .bg-brand-blue { background-color: #0f2e5a; }
         .border-brand-blue { border-color: #0f2e5a; }
@@ -29,16 +31,88 @@ The content of the body element is displayed in your browser.
         .brand-orange { color: #f58220; }
         .bg-brand-orange { background-color: #f58220; }
         .border-brand-orange { border-color: #f58220; }
+        
+        .table-scroll::-webkit-scrollbar { height: 6px; }
+        .table-scroll::-webkit-scrollbar-thumb { background-color: #f58220; border-radius: 10px; }
     </style>
 </head>
-<body class="text-gray-800 pb-10 flex flex-col min-h-screen">
+<body class="text-gray-800 pb-10 flex flex-col min-h-screen relative">
 
-    <div class="max-w-5xl mx-auto mt-6 md:mt-10 p-4 md:p-8 bg-white md:rounded-3xl shadow-xl relative overflow-hidden w-full flex-grow border-t-8 border-brand-orange">
-        
-        <!-- ================= ترويسة اللوجو النصي ================= -->
-        <div class="text-center mb-6 border-b border-gray-100 pb-6">
+    <!-- ================= شاشة التحميل (Loading Spinner) ================= -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-[70] hidden flex-col items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="w-16 h-16 border-4 border-gray-200 border-t-[#f58220] rounded-full animate-spin mb-4"></div>
+        <h2 class="text-xl font-black brand-blue">جاري البحث ومطابقة الشروط...</h2>
+        <p class="text-gray-500 font-bold mt-2">بنفلتر قاعدة البيانات عشان نلاقي الأنسب لبياناتك</p>
+    </div>
+
+    <!-- ================= شريط الطوارئ (العداد التنازلي) ================= -->
+    <div class="bg-red-600 text-white text-center py-2.5 px-2 text-sm md:text-base font-bold shadow-md z-40 sticky top-0 flex flex-wrap justify-center items-center gap-2">
+        <span>⏳ بادر بالحجز.. يغلق التقديم في:</span>
+        <span id="countdown" class="font-black text-yellow-300 tracking-wider bg-red-700 px-3 py-1 rounded-lg border border-red-500 shadow-inner"></span>
+    </div>
+
+    <!-- ================= شاشة الشروط ================= -->
+    <div id="terms-gateway" class="fixed inset-0 bg-[#f8fafc] z-50 flex flex-col items-center pt-6 pb-12 px-4 overflow-y-auto mt-10">
+        <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl p-6 md:p-10 border-t-8 border-brand-orange mt-2 md:mt-6">
+            <div class="flex justify-center items-center mb-6 select-none">
+                <div class="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-3">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="brand-blue">مسارك</span>
+                    <span class="brand-orange">إلي الإسكان</span>
+                </div>
+            </div>
+
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-center shadow-sm">
+                <span class="text-red-700 font-bold text-sm md:text-base">⚠️ تنبيه هام: تقديمك في الطرحين (هيئة المجتمعات) و(صندوق الإسكان) معاً يُعرضك للرفض.</span>
+            </div>
+
+            <div class="text-center mb-8 border-b border-gray-100 pb-6">
+                <h2 class="text-2xl md:text-3xl font-black brand-blue mb-2">شروط التقديم في الإيجار المنتهي بالتملك</h2>
+                <h3 class="text-lg md:text-xl font-bold text-gray-500 mb-4">هيئة المجتمعات العمرانية الجديدة</h3>
+                <p class="text-brand-orange font-bold text-base md:text-lg bg-orange-50 py-2 px-4 rounded-xl inline-block border border-orange-100">
+                    للتأكد من مطابقتك لشروط المبادرة، علم (صح) قدام الشروط اللي بتنطبق عليك:
+                </p>
+            </div>
             
-            <!-- اللوجو النصي المدمج مع أيقونة هندسية -->
+            <div class="space-y-4 mb-8">
+                <label class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-xl cursor-pointer hover:border-[#f58220] transition-all duration-300 bg-gray-50 hover:bg-white shadow-sm">
+                    <input type="checkbox" class="term-check w-7 h-7 accent-[#f58220] cursor-pointer flex-shrink-0">
+                    <span class="text-gray-800 font-bold text-base md:text-lg leading-relaxed">مصري الجنسية، وسنك وقت التقديم من 21 لـ 45 سنة.</span>
+                </label>
+                <label class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-xl cursor-pointer hover:border-[#f58220] transition-all duration-300 bg-gray-50 hover:bg-white shadow-sm">
+                    <input type="checkbox" class="term-check w-7 h-7 accent-[#f58220] cursor-pointer flex-shrink-0">
+                    <span class="text-gray-800 font-bold text-base md:text-lg leading-relaxed">أنت أو أسرتك لم يسبق لكم تملك شقة، ولم تستفيدوا بأي دعم إسكاني.</span>
+                </label>
+                <label class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-xl cursor-pointer hover:border-[#f58220] transition-all duration-300 bg-gray-50 hover:bg-white shadow-sm">
+                    <input type="checkbox" class="term-check w-7 h-7 accent-[#f58220] cursor-pointer flex-shrink-0">
+                    <span class="text-gray-800 font-bold text-base md:text-lg leading-relaxed">ستتقدم في المحافظة/المدينة المطابقة لمحل إقامتك (حسب البطاقة).</span>
+                </label>
+                <label class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-xl cursor-pointer hover:border-[#f58220] transition-all duration-300 bg-gray-50 hover:bg-white shadow-sm">
+                    <input type="checkbox" class="term-check w-7 h-7 accent-[#f58220] cursor-pointer flex-shrink-0">
+                    <span class="text-gray-800 font-bold text-base md:text-lg leading-relaxed">الشقة مخصصة لسكني أنا وأسرتي، ومش الغرض منها التأجير أو التنازل.</span>
+                </label>
+
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <label class="flex items-center gap-4 p-4 border-2 border-blue-50 rounded-xl cursor-pointer hover:border-blue-200 transition-all duration-300 bg-blue-50/50">
+                        <input type="checkbox" id="pod-check" class="w-7 h-7 accent-[#0f2e5a] cursor-pointer flex-shrink-0">
+                        <div>
+                            <span class="text-brand-blue font-black text-base block">هل أنت من ذوي الهمم؟ (اختياري)</span>
+                            <span class="text-gray-500 text-xs font-bold mt-1 block">إذا انطبق عليك، سيتم حساب حصتك المخصصة (5%) من الوحدات.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <button id="start-btn" disabled class="w-full bg-gray-200 text-gray-500 font-black py-4 rounded-xl text-xl cursor-not-allowed transition-all duration-300">
+                علم (صح) على الشروط الأساسية عشان تبدأ
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= واجهة الأبلكيشن ================= -->
+    <div class="max-w-5xl mx-auto mt-6 md:mt-10 p-4 md:p-8 bg-white md:rounded-3xl shadow-xl relative overflow-hidden w-full flex-grow border-t-8 border-brand-orange z-10">
+        <div class="text-center mb-6 border-b border-gray-100 pb-6">
             <div class="flex justify-center items-center mb-4 select-none">
                 <div class="text-4xl md:text-5xl font-black tracking-tight flex items-center gap-3">
                     <svg class="w-10 h-10 md:w-12 md:h-12 brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -48,17 +122,14 @@ The content of the body element is displayed in your browser.
                     <span class="brand-orange">إلي الإسكان</span>
                 </div>
             </div>
-            
             <h1 class="text-xl md:text-2xl font-black text-gray-700 mt-5 leading-tight">
                 دليلك لشقق الإيجار المنتهي بالتملك
-                <span class="block text-gray-500 text-lg md:text-xl mt-2 font-bold">أو طرح هيئة المجتمعات العمرانية</span>
+                <span class="block text-gray-500 text-lg md:text-xl mt-2 font-bold">طرح هيئة المجتمعات العمرانية</span>
             </h1>
         </div>
 
-        <!-- ================= الشاشة الرئيسية (اختيار النظام) ================= -->
         <div id="landingPage" class="fade-in flex flex-col items-center justify-center pt-6 pb-10">
             <p class="text-gray-500 font-medium text-lg text-center mb-8">حدد نوع المشروع الذي تبحث عنه للبدء</p>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl px-2">
                 <button onclick="selectMode('immediate')" class="group bg-white border-2 border-gray-100 hover:border-[#0f2e5a] rounded-3xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-xl transform hover:-translate-y-2">
                     <div class="bg-gray-50 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 group-hover:bg-[#0f2e5a] transition-colors">
@@ -67,10 +138,9 @@ The content of the body element is displayed in your browser.
                     <h2 class="text-2xl font-black brand-blue mb-3">الاستلام الفوري</h2>
                     <p class="text-gray-500 font-medium leading-relaxed text-sm">شقق جاهزة للتسليم المباشر بأنظمة إيجار وتأمين تناسب مختلف الشرائح.</p>
                 </button>
-
                 <button onclick="selectMode('future')" class="group bg-white border-2 border-gray-100 hover:border-[#f58220] rounded-3xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-xl transform hover:-translate-y-2">
                     <div class="bg-gray-50 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 group-hover:bg-[#f58220] transition-colors">
-                        <span class="text-4xl group-hover:text-white">🏗️</span>
+                        <span class="text-4xl group-hover:text-white">🏗</span>
                     </div>
                     <h2 class="text-2xl font-black brand-blue mb-3">الاستلام خلال 36 شهر</h2>
                     <p class="text-gray-500 font-medium leading-relaxed text-sm">مشروعات تحت الإنشاء تسلم بعد 3 سنوات بتسهيلات في الدفع والسداد.</p>
@@ -78,9 +148,8 @@ The content of the body element is displayed in your browser.
             </div>
         </div>
 
-        <!-- ================= شاشة التطبيق ================= -->
         <div id="appPage" class="hidden pb-6">
-            <div class="flex flex-col-reverse md:flex-row justify-between items-center mb-8 border-b pb-6 border-gray-100 gap-4 mt-4">
+            <div class="flex flex-col-reverse md:flex-row justify-between items-center mb-6 border-b pb-6 border-gray-100 gap-4 mt-4">
                 <button onclick="goBack()" class="flex items-center gap-2 text-gray-500 hover:text-red-600 font-bold bg-gray-50 hover:bg-red-50 px-5 py-2.5 rounded-xl transition w-full md:w-auto justify-center">
                     <span>رجوع للرئيسية</span>
                 </button>
@@ -89,7 +158,10 @@ The content of the body element is displayed in your browser.
                 </div>
             </div>
 
-            <!-- فورم البيانات -->
+            <div id="future-hint" class="hidden bg-orange-50 border border-orange-200 text-brand-orange text-sm md:text-base font-bold p-3 rounded-xl mb-6 text-center shadow-sm">
+                ⚠️ تنبيه: نظام الاستلام خلال 36 شهر متاح فقط لأصحاب الشريحة الثانية والثالثة.
+            </div>
+
             <div id="formContainer" class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8 p-6 rounded-2xl border shadow-sm bg-gray-50 border-gray-200">
                 <div>
                     <label class="block text-sm font-bold brand-blue mb-2">اختر محافظة إقامتك:</label>
@@ -120,28 +192,36 @@ The content of the body element is displayed in your browser.
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold brand-blue mb-2">إجمالي الدخل الشهري (بالجنيه):</label>
-                    <input type="number" id="income" value="5000" min="0" step="500" class="w-full border border-gray-300 rounded-xl p-3.5 text-base font-bold text-gray-800 focus:ring-2 focus:ring-[#0f2e5a] outline-none transition bg-white text-right" dir="ltr">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-bold brand-blue">الدخل الشهري (بالجنيه):</label>
+                        <button type="button" onclick="openBracketModal()" class="text-brand-orange hover:text-white bg-orange-50 hover:bg-[#f58220] border border-orange-200 text-xs font-bold flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors shadow-sm">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            شرح الشرائح
+                        </button>
+                    </div>
+                    <input type="number" id="income" value="" autocomplete="off" placeholder="أدخل الدخل الشهري هنا..." min="0" step="100" class="w-full border border-gray-300 rounded-xl p-3.5 text-base font-bold text-gray-800 focus:ring-2 focus:ring-[#0f2e5a] outline-none transition bg-white text-right" dir="rtl">
                 </div>
             </div>
 
-            <!-- زر البحث -->
             <button id="searchBtn" onclick="searchUnits()" class="w-full bg-brand-blue hover:bg-[#0a1f3d] text-white font-black text-xl py-4 px-4 rounded-xl transition-all duration-300 shadow-lg transform active:scale-95 flex justify-center items-center gap-2 mb-8">
                 ابحث عن الوحدات المتاحة
             </button>
 
-            <!-- منطقة عرض النتائج -->
             <div id="resultArea" class="hidden">
                 <div id="alertBox" class="p-5 rounded-xl mb-6 font-bold text-lg md:text-xl text-center border"></div>
-                <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+                <div id="important-info-container" class="mt-10 text-center hidden fade-in">
+                    <button onclick="openInfoModal()" class="text-brand-orange hover:text-brand-blue font-bold text-sm md:text-base transition-colors inline-flex items-center justify-center gap-2 border-b border-dashed border-brand-orange pb-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        معلومات قانونية هامة عن الإيجار والتملك (اضغط للقراءة)
+                    </button>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- ================= شريط حقوق النشر والروابط الرسمية ================= -->
-    <footer class="mt-8 border-t border-gray-200 pt-8 pb-6 text-center max-w-5xl mx-auto w-full px-4">
+    <footer class="mt-8 border-t border-gray-200 pt-8 pb-6 text-center max-w-5xl mx-auto w-full px-4 relative z-10">
         <div class="flex justify-center gap-5 mb-5">
             <a href="https://www.facebook.com/share/1CWZdG852w/" target="_blank" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 hover:bg-blue-700 hover:text-white transition shadow-sm">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
@@ -149,72 +229,131 @@ The content of the body element is displayed in your browser.
             <a href="https://www.tiktok.com/@masarco_real_estate?_r=1&_t=ZS-9A5NoMtVtEF" target="_blank" class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-900 hover:text-white transition shadow-sm">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
             </a>
-            <a href="https://wa.me/201107833770" target="_blank" class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition shadow-sm">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 21.011l-3.324.871.888-3.24A9.953 9.953 0 0 1 2.052 12C2.052 6.486 6.539 2 12.052 2s10 4.486 10 10-4.486 10-9.969 10a9.96 9.96 0 0 1-4.992-1.332l4.94.343z" fill-opacity=".08"/><path d="M21.052 12c0 4.962-4.038 9-9 9a8.96 8.96 0 0 1-4.521-1.222l-.323-.192-3.364.881.895-3.277-.211-.336A8.963 8.963 0 0 1 3.052 12c0-4.962 4.038-9 9-9s9 4.038 9 9zm-9-10.5C5.71 1.5 1.552 5.657 1.552 10.8c0 1.986.623 3.864 1.764 5.433l-1.26 4.615 4.72-1.238A10.457 10.457 0 0 0 12.052 22.5c5.342 0 9.5-4.157 9.5-9.3S17.394 1.5 12.052 1.5zm5.02 12.72c-.274-.138-1.63-.805-1.883-.897-.253-.092-.437-.138-.62.138-.184.276-.713.897-.873 1.08-.16.184-.322.207-.597.069-.276-.138-1.163-.429-2.215-1.371-.818-.733-1.37-1.638-1.53-1.914-.161-.276-.017-.425.12-.563.125-.125.276-.322.414-.483.138-.161.184-.276.276-.46.092-.184.046-.345-.023-.483-.069-.138-.62-1.494-.85-2.046-.224-.538-.452-.464-.62-.473-.16-.008-.344-.011-.528-.011-.184 0-.483.069-.735.345-.253.276-.965.943-.965 2.299s.988 2.667 1.126 2.851c.138.184 1.942 2.966 4.708 4.127.658.277 1.171.442 1.572.566.661.21 1.262.18 1.735.109.528-.079 1.63-.667 1.86-1.311.23-.644.23-1.196.16-1.311-.069-.115-.253-.184-.528-.322z"/></svg>
-            </a>
         </div>
         <p class="text-sm text-gray-500 font-bold">جميع الحقوق محفوظة © لشركة مسارك إلي الإسكان للاستشارات العقارية 2026</p>
     </footer>
 
+    <a href="https://wa.me/201107833770?text=أهلاً%20شركة%20مسارك،%20لدي%20استفسار%20بخصوص%20طرح%20شقق%20الإسكان." target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-green-600 hover:scale-110 transition-all duration-300 z-50">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 21.011l-3.324.871.888-3.24A9.953 9.953 0 0 1 2.052 12C2.052 6.486 6.539 2 12.052 2s10 4.486 10 10-4.486 10-9.969 10a9.96 9.96 0 0 1-4.992-1.332l4.94.343z" fill-opacity=".08"/><path d="M21.052 12c0 4.962-4.038 9-9 9a8.96 8.96 0 0 1-4.521-1.222l-.323-.192-3.364.881.895-3.277-.211-.336A8.963 8.963 0 0 1 3.052 12c0-4.962 4.038-9 9-9s9 4.038 9 9zm-9-10.5C5.71 1.5 1.552 5.657 1.552 10.8c0 1.986.623 3.864 1.764 5.433l-1.26 4.615 4.72-1.238A10.457 10.457 0 0 0 12.052 22.5c5.342 0 9.5-4.157 9.5-9.3S17.394 1.5 12.052 1.5zm5.02 12.72c-.274-.138-1.63-.805-1.883-.897-.253-.092-.437-.138-.62.138-.184.276-.713.897-.873 1.08-.16.184-.322.207-.597.069-.276-.138-1.163-.429-2.215-1.371-.818-.733-1.37-1.638-1.53-1.914-.161-.276-.017-.425.12-.563.125-.125.276-.322.414-.483.138-.161.184-.276.276-.46.092-.184.046-.345-.023-.483-.069-.138-.62-1.494-.85-2.046-.224-.538-.452-.464-.62-.473-.16-.008-.344-.011-.528-.011-.184 0-.483.069-.735.345-.253.276-.965.943-.965 2.299s.988 2.667 1.126 2.851c.138.184 1.942 2.966 4.708 4.127.658.277 1.171.442 1.572.566.661.21 1.262.18 1.735.109.528-.079 1.63-.667 1.86-1.311.23-.644.23-1.196.16-1.311-.069-.115-.253-.184-.528-.322z"/></svg>
+    </a>
+
+    <!-- ================= Modals ================= -->
+    <div id="bracket-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[60] hidden flex items-center justify-center p-3 sm:p-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden transform scale-95 transition-transform">
+            <div class="bg-[#0f2e5a] p-4 flex justify-between items-center flex-shrink-0">
+                <h3 class="text-white font-black text-lg md:text-xl">💡 الدليل المبسط لشرائح الدخل</h3>
+                <button onclick="closeBracketModal()" class="text-white hover:text-brand-orange font-bold text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-4 md:p-6 overflow-y-auto flex-grow">
+                <p class="text-gray-600 font-bold mb-4 text-sm md:text-base">وزارة الإسكان بتقسم المتقدمين لـ 3 شرائح بناءً على الحالة الاجتماعية والدخل الشهري، لتحديد نوع المشاريع المناسبة:</p>
+                <div class="overflow-x-auto w-full pb-2 table-scroll border border-gray-200 rounded-lg">
+                    <table class="w-full min-w-[650px] border-collapse text-center text-sm md:text-base">
+                        <thead>
+                            <tr class="bg-orange-100 brand-blue font-black">
+                                <th class="border border-gray-200 p-2 md:p-3" rowspan="2">الشريحة</th>
+                                <th class="border border-gray-200 p-2 md:p-3" rowspan="2">إجمالي قيمة الوحدة</th>
+                                <th class="border border-gray-200 p-2 md:p-3" colspan="2">الدخل الشهري للأعزب</th>
+                                <th class="border border-gray-200 p-2 md:p-3" colspan="2">الدخل الشهري للأسرة</th>
+                            </tr>
+                            <tr class="bg-orange-50 brand-blue font-bold">
+                                <th class="border border-gray-200 p-2">الحد الأدنى</th>
+                                <th class="border border-gray-200 p-2">الحد الأقصى</th>
+                                <th class="border border-gray-200 p-2">الحد الأدنى</th>
+                                <th class="border border-gray-200 p-2">الحد الأقصى</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="row-bracket-1" class="hover:bg-gray-50 transition-colors">
+                                <td class="border border-gray-200 p-2 font-black text-lg">1</td>
+                                <td class="border border-gray-200 p-2 font-bold whitespace-nowrap">أقل من مليون جنية</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">5,000</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">12,000</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">5,000</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">16,000</td>
+                            </tr>
+                            <tr class="bg-blue-50 hover:bg-blue-100">
+                                <td class="border border-gray-200 p-2 font-black text-lg">2</td>
+                                <td class="border border-gray-200 p-2 font-bold">من مليون جنية حتى أقل من 2 مليون</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">12,001</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">21,000</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">16,001</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">28,000</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-200 p-2 font-black text-lg">3</td>
+                                <td class="border border-gray-200 p-2 font-bold whitespace-nowrap">من 2 مليون جنية فأكثر</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">21,001</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">33,000</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">28,001</td>
+                                <td class="border border-gray-200 p-2 font-medium text-gray-700">44,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="modal-future-warning" class="hidden mt-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm font-bold text-center border border-red-200">
+                    ⚠️ تنبيه: الشريحة الأولى غير مدعومة في نظام الاستلام خلال 36 شهر.
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 border-t border-gray-200 text-center flex-shrink-0">
+                <button onclick="closeBracketModal()" class="w-full md:w-auto bg-brand-blue text-white font-black text-lg py-3 px-10 rounded-xl hover:bg-[#0a1f3d] transition shadow-md">فهمت، شكراً</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[60] hidden flex items-center justify-center p-3 sm:p-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] overflow-hidden transform scale-95 transition-transform">
+            <div class="bg-orange-50 border-b border-orange-100 p-4 flex justify-between items-center flex-shrink-0">
+                <h3 class="text-brand-orange font-black text-lg md:text-xl flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    شروط قانونية ومالية هامة 
+                </h3>
+                <button onclick="closeInfoModal()" class="text-brand-orange hover:text-red-600 font-bold text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-5 md:p-6 overflow-y-auto flex-grow space-y-4">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <h4 class="font-black brand-blue mb-2 text-base">📈 الزيادة السنوية للإيجار</h4>
+                    <p class="text-gray-600 font-medium text-sm leading-relaxed">القيمة الإيجارية الشهرية الموضحة <strong class="text-brand-orange">ليست ثابتة</strong>، بل تزيد بمعدل 10% سنوياً طوال مدة العقد (20 عاماً).</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <h4 class="font-black brand-blue mb-2 text-base">💰 التملك المبكر للوحدة</h4>
+                    <p class="text-gray-600 font-medium text-sm leading-relaxed">لا يجوز سداد قيمة الوحدة بالكامل وتملكها بشكل نهائي إلا بعد مرور <strong class="text-brand-orange">5 سنوات</strong> من تاريخ الاستلام.</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <h4 class="font-black brand-blue mb-2 text-base">🚫 حظر التوكيلات</h4>
+                    <p class="text-gray-600 font-medium text-sm leading-relaxed">الشقة مخصصة للسكن فقط. يُحظر نهائياً عمل أي توكيلات (عامة أو خاصة) بالبيع أو التنازل خلال فترة الحظر (20 عاماً).</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 border-t border-gray-200 text-center flex-shrink-0">
+                <button onclick="closeInfoModal()" class="w-full md:w-auto bg-brand-blue text-white font-black text-lg py-3 px-10 rounded-xl hover:bg-[#0a1f3d] transition shadow-md">اطلعت على الشروط</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Scripts ================= -->
     <script>
-        // ================= رقم الواتساب الرسمي =================
-        const WHATSAPP_NUMBER = "201107833770"; 
-
-        // ================= قواعد البيانات =================
-        const immediateData = [{"المحافظة": "القاهرة", "المدينة": "القاهرة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 21, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 3200.76, "أكبر ايجار": 3360.8, "أقل تأمين": 9602, "أكبر تأمين": 10082, "ارضي": 11, "متكرر": 7, "اخير": 3}, {"المحافظة": "القاهرة", "المدينة": "15 مايو", "جديه الحجز": 5000, "المشروع": "منخفض التكاليف", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 14, "أقل مساحة": 66.12, "أكبر مساحة": 66.12, "أقل ايجار": 2964.38, "أكبر ايجار": 3112.6, "أقل تأمين": 8893, "أكبر تأمين": 9338, "ارضي": 7, "متكرر": 4, "اخير": 3}, {"المحافظة": "القاهرة", "المدينة": "15 مايو", "جديه الحجز": 10000, "المشروع": "إسكان اقتصادي", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 2, "Total cells": 44, "أقل مساحة": 82.5, "أكبر مساحة": 129.44, "أقل ايجار": 3714.16, "أكبر ايجار": 7138.4, "أقل تأمين": 11142, "أكبر تأمين": 21415, "ارضي": 6, "متكرر": 26, "اخير": 12}, {"المحافظة": "القاهرة", "المدينة": "15 مايو", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 4, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2683.27, "أكبر ايجار": 2683.27, "أقل تأمين": 8050, "أكبر تأمين": 8050, "ارضي": 2, "متكرر": 0, "اخير": 2}, {"المحافظة": "القاهرة", "المدينة": "بدر", "جديه الحجز": 15000, "المشروع": "إسكان مميز", "المحافظات المتاح لها التقديم ": "القاهرة -  السويس", "الشريحه": 2, "Total cells": 100, "أقل مساحة": 90.0, "أكبر مساحة": 90.0, "أقل ايجار": 7016.24, "أكبر ايجار": 7291.38, "أقل تأمين": 21049, "أكبر تأمين": 21874, "ارضي": 0, "متكرر": 0, "اخير": 100}, {"المحافظة": "القاهرة", "المدينة": "بدر", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "القاهرة -  السويس", "الشريحه": 1, "Total cells": 10, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3205.8, "أكبر ايجار": 3366.09, "أقل تأمين": 9617, "أكبر تأمين": 10098, "ارضي": 0, "متكرر": 9, "اخير": 1}, {"المحافظة": "القاهرة", "المدينة": "الشروق", "جديه الحجز": 10000, "المشروع": "اسكان المستقبل", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 60, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3525.91, "أكبر ايجار": 3702.21, "أقل تأمين": 10578, "أكبر تأمين": 11107, "ارضي": 12, "متكرر": 36, "اخير": 12}, {"المحافظة": "القليوبية", "المدينة": "العبور الجديدة", "جديه الحجز": 15000, "المشروع": "فالي تاورز ايست", "المحافظات المتاح لها التقديم ": "القليوبية - بورسعيد  شمال سيناء - جنوب سيناء", "الشريحه": 2, "Total cells": 659, "أقل مساحة": 89.0, "أكبر مساحة": 116.0, "أقل ايجار": 6802.23, "أكبر ايجار": 11572.91, "أقل تأمين": 20407, "أكبر تأمين": 34719, "ارضي": 118, "متكرر": 392, "اخير": 149}, {"المحافظة": "القليوبية", "المدينة": "العبور", "جديه الحجز": 10000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "القليوبية فقط", "الشريحه": 1, "Total cells": 127, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3434.12, "أكبر ايجار": 3605.82, "أقل تأمين": 10302, "أكبر تأمين": 10817, "ارضي": 33, "متكرر": 65, "اخير": 29}, {"المحافظة": "القليوبية", "المدينة": "العبور", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "القليوبية فقط", "الشريحه": 1, "Total cells": 10, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2715.22, "أكبر ايجار": 2850.98, "أقل تأمين": 8146, "أكبر تأمين": 8553, "ارضي": 3, "متكرر": 5, "اخير": 2}, {"المحافظة": "القليوبية", "المدينة": "العبور", "جديه الحجز": 15000, "المشروع": "روضة العبور", "المحافظات المتاح لها التقديم ": "القليوبية فقط", "الشريحه": 2, "Total cells": 682, "أقل مساحة": 76.74, "أكبر مساحة": 100.0, "أقل ايجار": 5767.57, "أكبر ايجار": 7810.46, "أقل تأمين": 17303, "أكبر تأمين": 23431, "ارضي": 100, "متكرر": 468, "اخير": 114}, {"المحافظة": "الجيزة", "المدينة": "أكتوبر الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "الجيزة فقط", "الشريحه": 3, "Total cells": 85, "أقل مساحة": 106.0, "أكبر مساحة": 118.0, "أقل ايجار": 9005.8, "أكبر ايجار": 12592.26, "أقل تأمين": 27017, "أكبر تأمين": 37777, "ارضي": 19, "متكرر": 54, "اخير": 12}, {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 5000, "المشروع": "متخللات الحي الأول - اقتصادي/مجاورة 1", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 1, "Total cells": 8, "أقل مساحة": 59.0, "أكبر مساحة": 79.0, "أقل ايجار": 2534.95, "أكبر ايجار": 3473.74, "أقل تأمين": 7605, "أكبر تأمين": 10421, "ارضي": 2, "متكرر": 3, "اخير": 3}, {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 5000, "المشروع": "متخللات الحي الأول - منخفض التكاليف/مجاورة 1", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 1, "Total cells": 24, "أقل مساحة": 78.2, "أكبر مساحة": 78.2, "أقل ايجار": 3313.13, "أكبر ايجار": 3478.79, "أقل تأمين": 9939, "أكبر تأمين": 10436, "ارضي": 8, "متكرر": 9, "اخير": 7}, {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 15000, "المشروع": "متخللات الحي الأول - متوسط/فوق متوسط", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 2, "Total cells": 18, "أقل مساحة": 77.0, "أكبر مساحة": 140.0, "أقل ايجار": 5032.82, "أكبر ايجار": 8947.25, "أقل تأمين": 15098, "أكبر تأمين": 26842, "ارضي": 4, "متكرر": 4, "اخير": 10}, {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 1, "Total cells": 194, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3099.88, "أكبر ايجار": 3254.88, "أقل تأمين": 9300, "أكبر تأمين": 9765, "ارضي": 27, "متكرر": 129, "اخير": 38}, {"المحافظة": "مطروح", "المدينة": "العلمين الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "مرسى مطروح", "الشريحه": 3, "Total cells": 50, "أقل مساحة": 110.0, "أكبر مساحة": 130.0, "أقل ايجار": 13479.98, "أكبر ايجار": 16231.47, "أقل تأمين": 40440, "أكبر تأمين": 48694, "ارضي": 10, "متكرر": 19, "اخير": 21}, {"المحافظة": "مطروح", "المدينة": "العلمين الجديدة", "جديه الحجز": 15000, "المشروع": "إسكان مميز", "المحافظات المتاح لها التقديم ": "مرسى مطروح", "الشريحه": 2, "Total cells": 48, "أقل مساحة": 95.0, "أكبر مساحة": 100.0, "أقل ايجار": 7327.77, "أكبر ايجار": 7858.98, "أقل تأمين": 21983, "أكبر تأمين": 23577, "ارضي": 8, "متكرر": 32, "اخير": 8}, {"المحافظة": "دمياط", "المدينة": "دمياط الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "دمياط فقط", "الشريحه": 3, "Total cells": 15, "أقل مساحة": 115.0, "أكبر مساحة": 115.0, "أقل ايجار": 11577.47, "أكبر ايجار": 12040.57, "أقل تأمين": 34732, "أكبر تأمين": 36122, "ارضي": 6, "متكرر": 0, "اخير": 9}, {"المحافظة": "دمياط", "المدينة": "دمياط الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "دمياط فقط", "الشريحه": 1, "Total cells": 7, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3398.81, "أكبر ايجار": 3398.81, "أقل تأمين": 10196, "أكبر تأمين": 10196, "ارضي": 1, "متكرر": 0, "اخير": 6}, {"المحافظة": "دمياط", "المدينة": "دمياط الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان شباب", "المحافظات المتاح لها التقديم ": "دمياط فقط", "الشريحه": 1, "Total cells": 9, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3669.49, "أكبر ايجار": 3669.49, "أقل تأمين": 11008, "أكبر تأمين": 11008, "ارضي": 9, "متكرر": 0, "اخير": 0}, {"المحافظة": "الشرقية", "المدينة": "العاشر من رمضان", "جديه الحجز": 15000, "المشروع": "إسكان شباب", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 2, "Total cells": 20, "أقل مساحة": 100.0, "أكبر مساحة": 100.0, "أقل ايجار": 6631.53, "أكبر ايجار": 6963.1, "أقل تأمين": 19895, "أكبر تأمين": 20889, "ارضي": 5, "متكرر": 8, "اخير": 7}, {"المحافظة": "الشرقية", "المدينة": "العاشر من رمضان", "جديه الحجز": 5000, "المشروع": "منخفض التكاليف", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 1, "Total cells": 75, "أقل مساحة": 58.7, "أكبر مساحة": 95.0, "أقل ايجار": 2744.88, "أكبر ايجار": 5441.7, "أقل تأمين": 8235, "أكبر تأمين": 16325, "ارضي": 20, "متكرر": 29, "اخير": 26}, {"المحافظة": "الشرقية", "المدينة": "العاشر من رمضان", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 1, "Total cells": 8, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3189.33, "أكبر ايجار": 3348.79, "أقل تأمين": 9568, "أكبر تأمين": 10046, "ارضي": 2, "متكرر": 4, "اخير": 2}, {"المحافظة": "الشرقية", "المدينة": "الصالحية الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان اقتصادي", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 2, "Total cells": 9, "أقل مساحة": 94.5, "أكبر مساحة": 94.5, "أقل ايجار": 4792.0, "أكبر ايجار": 5031.6, "أقل تأمين": 14376, "أكبر تأمين": 15095, "ارضي": 4, "متكرر": 5, "اخير": 0}, {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 15000, "المشروع": "دار مصر", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 3, "Total cells": 35, "أقل مساحة": 130.0, "أكبر مساحة": 150.0, "أقل ايجار": 12008.93, "أكبر ايجار": 14687.84, "أقل تأمين": 36027, "أكبر تأمين": 44064, "ارضي": 5, "متكرر": 12, "اخير": 18}, {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 1, "Total cells": 67, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3135.19, "أكبر ايجار": 3291.95, "أقل تأمين": 9406, "أكبر تأمين": 9876, "ارضي": 0, "متكرر": 66, "اخير": 1}, {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 1, "Total cells": 37, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2619.38, "أكبر ايجار": 2750.35, "أقل تأمين": 7858, "أكبر تأمين": 8251, "ارضي": 17, "متكرر": 16, "اخير": 4}, {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 1, "Total cells": 25, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3295.25, "أكبر ايجار": 3460.01, "أقل تأمين": 9886, "أكبر تأمين": 10380, "ارضي": 10, "متكرر": 6, "اخير": 9}, {"المحافظة": "الدقهلية", "المدينة": "المنصورة الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "الدقهلية - دمياط", "الشريحه": 3, "Total cells": 106, "أقل مساحة": 106.0, "أكبر مساحة": 133.0, "أقل ايجار": 11494.63, "أكبر ايجار": 14977.22, "أقل تأمين": 34484, "أكبر تأمين": 44932, "ارضي": 28, "متكرر": 62, "اخير": 16}, {"المحافظة": "البحيرة", "المدينة": "رشيد الجديدة", "جديه الحجز": 10000, "المشروع": "طابع ساحلي", "المحافظات المتاح لها التقديم ": "كفر الشيخ - البحيرة", "الشريحه": 2, "Total cells": 260, "أقل مساحة": 90.0, "أكبر مساحة": 93.0, "أقل ايجار": 3525.78, "أكبر ايجار": 4725.47, "أقل تأمين": 10577, "أكبر تأمين": 14176, "ارضي": 45, "متكرر": 152, "اخير": 63}, {"المحافظة": "الفيوم", "المدينة": "الفيوم الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الفيوم فقط", "الشريحه": 1, "Total cells": 11, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2803.31, "أكبر ايجار": 2943.48, "أقل تأمين": 8410, "أكبر تأمين": 8830, "ارضي": 7, "متكرر": 4, "اخير": 0}, {"المحافظة": "بني سويف", "المدينة": "الفشن الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان متميز", "المحافظات المتاح لها التقديم ": "بني سويف فقط", "الشريحه": 2, "Total cells": 256, "أقل مساحة": 116.0, "أكبر مساحة": 150.0, "أقل ايجار": 4762.07, "أكبر ايجار": 6650.47, "أقل تأمين": 14286, "أكبر تأمين": 19951, "ارضي": 64, "متكرر": 128, "اخير": 64}, {"المحافظة": "بني سويف", "المدينة": "بني سويف الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "بني سويف فقط", "الشريحه": 1, "Total cells": 60, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3154.02, "أكبر ايجار": 3311.72, "أقل تأمين": 9462, "أكبر تأمين": 9935, "ارضي": 9, "متكرر": 42, "اخير": 9}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 2, "Total cells": 20, "أقل مساحة": 106.0, "أكبر مساحة": 115.0, "أقل ايجار": 7966.67, "أكبر ايجار": 9151.51, "أقل تأمين": 23900, "أكبر تأمين": 27455, "ارضي": 5, "متكرر": 5, "اخير": 10}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 485, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2873.93, "أكبر ايجار": 3017.62, "أقل تأمين": 8622, "أكبر تأمين": 9053, "ارضي": 88, "متكرر": 316, "اخير": 81}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 28, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2668.36, "أكبر ايجار": 2801.78, "أقل تأمين": 8005, "أكبر تأمين": 8405, "ارضي": 13, "متكرر": 10, "اخير": 5}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 11, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3262.29, "أكبر ايجار": 3425.41, "أقل تأمين": 9787, "أكبر تأمين": 10276, "ارضي": 2, "متكرر": 5, "اخير": 4}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان الشباب", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 2, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3509.44, "أكبر ايجار": 3509.44, "أقل تأمين": 10528, "أكبر تأمين": 10528, "ارضي": 0, "متكرر": 2, "اخير": 0}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان منخفض التكاليف", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 3, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2560.88, "أكبر ايجار": 2560.88, "أقل تأمين": 7683, "أكبر تأمين": 7683, "ارضي": 3, "متكرر": 0, "اخير": 0}, {"المحافظة": "المنيا", "المدينة": "ملوي الجديدة", "جديه الحجز": 10000, "المشروع": "جنة", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 2, "Total cells": 650, "أقل مساحة": 100.0, "أكبر مساحة": 161.0, "أقل ايجار": 4901.56, "أكبر ايجار": 8200.99, "أقل تأمين": 14705, "أكبر تأمين": 24603, "ارضي": 77, "متكرر": 483, "اخير": 90}, {"المحافظة": "أسيوط", "المدينة": "ناصر الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "أسيوط - الوادي الجديد", "الشريحه": 2, "Total cells": 117, "أقل مساحة": 106.0, "أكبر مساحة": 118.0, "أقل ايجار": 7496.59, "أكبر ايجار": 8836.16, "أقل تأمين": 22490, "أكبر تأمين": 26508, "ارضي": 8, "متكرر": 42, "اخير": 67}, {"المحافظة": "أسيوط", "المدينة": "أسيوط الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "أسيوط - الوادي الجديد", "الشريحه": 1, "Total cells": 240, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3175.2, "أكبر ايجار": 3333.97, "أقل تأمين": 9526, "أكبر تأمين": 10002, "ارضي": 48, "متكرر": 144, "اخير": 48}, {"المحافظة": "أسيوط", "المدينة": "أسيوط الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "أسيوط - الوادي الجديد", "الشريحه": 1, "Total cells": 55, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2942.18, "أكبر ايجار": 3089.29, "أقل تأمين": 8827, "أكبر تأمين": 9268, "ارضي": 3, "متكرر": 26, "اخير": 26}, {"المحافظة": "سوهاج", "المدينة": "سوهاج الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "سوهاج فقط", "الشريحه": 1, "Total cells": 4, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3347.03, "أكبر ايجار": 3514.38, "أقل تأمين": 10041, "أكبر تأمين": 10543, "ارضي": 0, "متكرر": 2, "اخير": 2}, {"المحافظة": "قنا", "المدينة": "قنا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "قنا - البحر الأحمر", "الشريحه": 1, "Total cells": 105, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2768.01, "أكبر ايجار": 2906.41, "أقل تأمين": 8304, "أكبر تأمين": 8719, "ارضي": 9, "متكرر": 71, "اخير": 25}, {"المحافظة": "الأقصر", "المدينة": "طيبة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "الأقصر فقط", "الشريحه": 1, "Total cells": 76, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3069.29, "أكبر ايجار": 3222.75, "أقل تأمين": 9208, "أكبر تأمين": 9668, "ارضي": 24, "متكرر": 23, "اخير": 29}, {"المحافظة": "الأقصر", "المدينة": "طيبة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "الأقصر فقط", "الشريحه": 1, "Total cells": 11, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2604.48, "أكبر ايجار": 2604.48, "أقل تأمين": 7813, "أكبر تأمين": 7813, "ارضي": 6, "متكرر": 0, "اخير": 5}, {"المحافظة": "الأقصر", "المدينة": "طيبة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الأقصر فقط", "الشريحه": 1, "Total cells": 9, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2909.23, "أكبر ايجار": 3054.69, "أقل تأمين": 8728, "أكبر تأمين": 9164, "ارضي": 3, "متكرر": 6, "اخير": 0}, {"المحافظة": "أسوان", "المدينة": "أسوان الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "اسوان فقط", "الشريحه": 1, "Total cells": 26, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2589.57, "أكبر ايجار": 2719.05, "أقل تأمين": 7769, "أكبر تأمين": 8157, "ارضي": 14, "متكرر": 9, "اخير": 3}];
-        
-        const futureData = [{"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الإسكندرية - مطروح", "الشريحه": 2, "Total cells": 240.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1748250, "أكبر_سعر": 1748250}, {"المحافظة": "الجيزة", "المدينة": "أكتوبر الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الجيزة - القاهرة", "الشريحه": 2, "Total cells": 1000.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1776600, "أكبر_سعر": 1776600}, {"المحافظة": "الجيزة", "المدينة": "أكتوبر الجديدة", "جديه الحجز": 50000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "الجيزة - القاهرة", "الشريحه": 3, "Total cells": 600.0, "أقل_مساحة": 103, "أكبر_مساحة": 126, "أقل_سعر": 2195445, "أكبر_سعر": 2685690}, {"المحافظة": "الشرقية", "المدينة": "حدائق العاشر", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية - بوسعيد - شمال سيناء - جنوب سيناء - السويس", "الشريحه": 2, "Total cells": 860.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1748250, "أكبر_سعر": 1748250}, {"المحافظة": "القليوبية", "المدينة": "العبور الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "القليوبية - القاهرة", "الشريحه": 2, "Total cells": 600.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1795500, "أكبر_سعر": 1795500}, {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "المنوفية - الغربية - الدقهلية - دمياط - كفر الشيخ", "الشريحه": 2, "Total cells": 480.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1738800, "أكبر_سعر": 1738800}, {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "المنيا - الفيوم - بني سويف", "الشريحه": 2, "Total cells": 360.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1691550, "أكبر_سعر": 1691550}, {"المحافظة": "سوهاج", "المدينة": "سوهاج الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز ", "المحافظات المتاح لها التقديم ": "سوهاج - قنا - الاقصر - اسوان - البحر الاحمر ", "الشريحه": 2, "Total cells": 360.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1672650, "أكبر_سعر": 1672650}, {"المحافظة": "مطروح", "المدينة": "العلمين الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الإسكندرية - مطروح", "الشريحه": 3, "Total cells": 500.0, "أقل_مساحة": 95, "أكبر_مساحة": 100, "أقل_سعر": 2194500, "أكبر_سعر": 2310000}];
-
         let currentMode = '';
+        let isSpecialNeeds = false;
 
-        // ================= قالب رسالة الواتساب للعملاء المرفوضين ديناميكياً =================
-        function getIneligibleWhatsAppLink(gov, status, income) {
-            const modeText = currentMode === 'immediate' ? 'الاستلام الفوري' : 'استلام خلال 36 شهر';
-            const minIncome = 5000;
-            const maxIncome = status === "أعزب" ? 33000 : 44000;
-            
-            let reason = "";
-            if (income < minIncome) reason = "أقل من الحد الأدنى المسموح به";
-            else if (income > maxIncome) reason = "يتخطى الحد الأقصى المسموح به";
-
-            const msg = `أهلاً شركة مسارك إلي الإسكان، أرغب في التقديم وهذه بياناتي:
-- النظام المطلوب: ${modeText}
-- محافظة محل الإقامة: ${gov}
-- السن: 
-- إجمالي الدخل الشهري: ${formatNumber(income)} ج.م (تنبيه: الدخل ${reason})
-- الحالة الاجتماعية: ${status}
-
-برجاء إفادتي بالبدائل الحكومية المتاحة التي تناسبني.`;
-            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-        }
-
-        // ================= قالب رسالة الواتساب للعملاء المطابقين للشروط =================
-        function getEligibleWhatsAppLink(projectName, govName, bracket, status, income) {
-            const modeText = currentMode === 'immediate' ? 'الاستلام الفوري' : 'استلام خلال 36 شهر';
-            const msg = `أهلاً شركة مسارك إلي الإسكان، أرغب في التقديم وهذه بياناتي:
-- النظام المطلوب: ${modeText} (${projectName} - شريحة ${bracket})
-- محافظة محل الإقامة: ${govName}
-- السن: 
-- إجمالي الدخل الشهري: ${formatNumber(income)} ج.م
-- الحالة الاجتماعية: ${status}`;
-            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-        }
-
-        // ================= دوال التحكم في الواجهة =================
+        // الدوال المسؤولة عن التنقل والتهيئة الأساسية (التي كانت مفقودة)
         function selectMode(mode) {
             currentMode = mode;
             document.getElementById('landingPage').classList.add('hidden');
             document.getElementById('appPage').classList.remove('hidden');
             
             const badge = document.getElementById('modeBadge');
+            const futureHint = document.getElementById('future-hint');
+            const infoContainer = document.getElementById('important-info-container');
             document.getElementById('resultArea').classList.add('hidden'); 
+            infoContainer.classList.add('hidden');
             
             if (mode === 'immediate') {
                 badge.innerText = 'نظام الاستلام الفوري';
                 badge.className = 'font-bold px-4 py-1.5 rounded-full text-sm inline-block shadow-sm bg-blue-100 brand-blue';
+                if(futureHint) futureHint.classList.add('hidden');
             } else {
                 badge.innerText = 'نظام الاستلام خلال 36 شهر';
                 badge.className = 'font-bold px-4 py-1.5 rounded-full text-sm inline-block shadow-sm bg-orange-100 brand-orange';
+                if(futureHint) futureHint.classList.remove('hidden');
             }
         }
 
@@ -222,6 +361,7 @@ The content of the body element is displayed in your browser.
             document.getElementById('appPage').classList.add('hidden');
             document.getElementById('landingPage').classList.remove('hidden');
             document.getElementById('resultArea').classList.add('hidden');
+            document.getElementById('important-info-container').classList.add('hidden');
             currentMode = '';
         }
 
@@ -240,12 +380,264 @@ The content of the body element is displayed in your browser.
             return text.toString().replace(/[أإآا]/g, 'ا').replace(/ة/g, 'ه').trim();
         }
 
-        // ================= دالة البحث الرئيسية =================
+        // العداد التنازلي
+        document.addEventListener("DOMContentLoaded", () => {
+            const incomeInput = document.getElementById("income");
+            if (incomeInput) incomeInput.value = "";
+
+            const deadline = new Date("Oct 19, 2026 23:59:59").getTime();
+            const countdownElement = document.getElementById("countdown");
+            
+            const timer = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = deadline - now;
+                
+                if (distance < 0) {
+                    clearInterval(timer);
+                    countdownElement.innerHTML = "انتهى وقت التقديم!";
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                countdownElement.innerHTML = `${days} يوم و ${hours} ساعة و ${minutes} دقيقة و ${seconds} ثانية`;
+            }, 1000);
+        });
+
+        // التقاط الشاشة (Screenshot)
+        function captureCard(btn, fileNamePrefix) {
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = `<div class="w-4 h-4 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin"></div> جاري الحفظ...`;
+            btn.disabled = true;
+
+            const card = btn.closest('.card-container');
+            
+            setTimeout(() => {
+                html2canvas(card, {
+                    scale: 2, 
+                    backgroundColor: '#ffffff',
+                    useCORS: true
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `مسارك - ${fileNamePrefix}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                }).catch(err => {
+                    console.error("Error capturing card:", err);
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                    alert("حدث خطأ أثناء حفظ الصورة، يرجى المحاولة مرة أخرى.");
+                });
+            }, 100);
+        }
+
+        // منطق الشروط
+        const checkboxes = document.querySelectorAll('.term-check');
+        const startBtn = document.getElementById('start-btn');
+        const gateway = document.getElementById('terms-gateway');
+        const podCheck = document.getElementById('pod-check');
+
+        checkboxes.forEach(box => {
+            box.addEventListener('change', () => {
+                const allChecked = Array.from(checkboxes).every(c => c.checked);
+                if (allChecked) {
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
+                    startBtn.classList.add('bg-brand-orange', 'text-white', 'shadow-lg', 'hover:bg-orange-600', 'transform', 'hover:scale-[1.02]');
+                    startBtn.innerText = "الشروط متوفرة فيا 👉 ابدأ البحث عن شقتي";
+                } else {
+                    startBtn.disabled = true;
+                    startBtn.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
+                    startBtn.classList.remove('bg-brand-orange', 'text-white', 'shadow-lg', 'hover:bg-orange-600', 'transform', 'hover:scale-[1.02]');
+                    startBtn.innerText = "علم (صح) على الشروط الأساسية عشان تبدأ";
+                }
+            });
+        });
+
+        startBtn.addEventListener('click', () => {
+            isSpecialNeeds = podCheck.checked;
+            gateway.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+            gateway.style.opacity = "0";
+            gateway.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                gateway.style.display = 'none';
+                window.scrollTo(0, 0);
+            }, 400);
+        });
+
+        function openBracketModal() {
+            const modal = document.getElementById('bracket-modal');
+            const row1 = document.getElementById('row-bracket-1');
+            const futureWarn = document.getElementById('modal-future-warning');
+            
+            if (currentMode === 'future') {
+                row1.classList.add('opacity-40', 'bg-gray-200');
+                futureWarn.classList.remove('hidden');
+            } else {
+                row1.classList.remove('opacity-40', 'bg-gray-200');
+                futureWarn.classList.add('hidden');
+            }
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.firstElementChild.classList.remove('scale-95');
+                modal.firstElementChild.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeBracketModal() {
+            const modal = document.getElementById('bracket-modal');
+            modal.firstElementChild.classList.remove('scale-100');
+            modal.firstElementChild.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
+        }
+
+        function openInfoModal() {
+            const modal = document.getElementById('info-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.firstElementChild.classList.remove('scale-95');
+                modal.firstElementChild.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeInfoModal() {
+            const modal = document.getElementById('info-modal');
+            modal.firstElementChild.classList.remove('scale-100');
+            modal.firstElementChild.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
+        }
+
+        // قواعد البيانات والمواقع
+        const WHATSAPP_NUMBER = "201107833770"; 
+        
+        const immediateData = [
+            {"المحافظة": "القاهرة", "المدينة": "القاهرة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 21, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 3200.76, "أكبر ايجار": 3360.8, "أقل تأمين": 9602, "أكبر تأمين": 10082, "ارضي": 11, "متكرر": 7, "اخير": 3, "اللوكيشن": [{"name": "التجمع الثالث", "link": "https://maps.app.goo.gl/PXDZMfc4pN69gWFS7"}]}, 
+            {"المحافظة": "القاهرة", "المدينة": "15 مايو", "جديه الحجز": 5000, "المشروع": "منخفض التكاليف", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 14, "أقل مساحة": 66.12, "أكبر مساحة": 66.12, "أقل ايجار": 2964.38, "أكبر ايجار": 3112.6, "أقل تأمين": 8893, "أكبر تأمين": 9338, "ارضي": 7, "متكرر": 4, "اخير": 3, "اللوكيشن": [{"name": "مجاورة 16", "link": "https://maps.app.goo.gl/DesXoB1jGBSgNGqb7"}]}, 
+            {"المحافظة": "القاهرة", "المدينة": "15 مايو", "جديه الحجز": 10000, "المشروع": "إسكان اقتصادي", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 2, "Total cells": 44, "أقل مساحة": 82.5, "أكبر مساحة": 129.44, "أقل ايجار": 3714.16, "أكبر ايجار": 7138.4, "أقل تأمين": 11142, "أكبر تأمين": 21415, "ارضي": 6, "متكرر": 26, "اخير": 12, "اللوكيشن": [{"name": "مجاورة 2", "link": "https://maps.app.goo.gl/qRVrR3az5tcVkzrb8"}, {"name": "مجاورة 20", "link": "https://maps.app.goo.gl/vogn5VGL29pnjPGUA"}, {"name": "مجاورة 21", "link": "https://maps.app.goo.gl/Ak1WigGh2BqvXivA6"}]}, 
+            {"المحافظة": "القاهرة", "المدينة": "15 مايو", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 4, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2683.27, "أكبر ايجار": 2683.27, "أقل تأمين": 8050, "أكبر تأمين": 8050, "ارضي": 2, "متكرر": 0, "اخير": 2, "اللوكيشن": [{"name": "مجاورة 32", "link": "https://maps.app.goo.gl/3i25UucT3V4ozyY79"}]}, 
+            {"المحافظة": "القاهرة", "المدينة": "بدر", "جديه الحجز": 15000, "المشروع": "إسكان مميز", "المحافظات المتاح لها التقديم ": "القاهرة -  السويس", "الشريحه": 2, "Total cells": 100, "أقل مساحة": 90.0, "أكبر مساحة": 90.0, "أقل ايجار": 7016.24, "أكبر ايجار": 7291.38, "أقل تأمين": 21049, "أكبر تأمين": 21874, "ارضي": 0, "متكرر": 0, "اخير": 100, "اللوكيشن": [{"name": "المجاورة 6 - الحي 6", "link": "https://maps.app.goo.gl/f2gnx9fAJGafPgiX9"}]}, 
+            {"المحافظة": "القاهرة", "المدينة": "بدر", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "القاهرة -  السويس", "الشريحه": 1, "Total cells": 10, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3205.8, "أكبر ايجار": 3366.09, "أقل تأمين": 9617, "أكبر تأمين": 10098, "ارضي": 0, "متكرر": 9, "اخير": 1, "اللوكيشن": [{"name": "منطقة الحي الرابع", "link": "https://maps.app.goo.gl/mtVZHDjRREuopLK26"}]}, 
+            {"المحافظة": "القاهرة", "المدينة": "الشروق", "جديه الحجز": 10000, "المشروع": "اسكان المستقبل", "المحافظات المتاح لها التقديم ": "القاهرة فقط", "الشريحه": 1, "Total cells": 60, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3525.91, "أكبر ايجار": 3702.21, "أقل تأمين": 10578, "أكبر تأمين": 11107, "ارضي": 12, "متكرر": 36, "اخير": 12, "اللوكيشن": [{"name": "منطقة المستقبل", "link": "https://maps.app.goo.gl/41gw4uRHhac5Sens6?g_st=aw"}]}, 
+            
+            {"المحافظة": "الشرقية", "المدينة": "العاشر من رمضان", "جديه الحجز": 15000, "المشروع": "إسكان شباب", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 2, "Total cells": 20, "أقل مساحة": 100.0, "أكبر مساحة": 100.0, "أقل ايجار": 6631.53, "أكبر ايجار": 6963.1, "أقل تأمين": 19895, "أكبر تأمين": 20889, "ارضي": 5, "متكرر": 8, "اخير": 7, "اللوكيشن": [{"name": "المجاورة 46 - الحي 6", "link": "https://maps.app.goo.gl/vwaSncxqCjBgFrPf9?g_st=aw"}, {"name": "المجاورة 53-54", "link": "https://q.me-qr.com/5neu8hfw"}]}, 
+            {"المحافظة": "الشرقية", "المدينة": "العاشر من رمضان", "جديه الحجز": 5000, "المشروع": "منخفض التكاليف", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 1, "Total cells": 75, "أقل مساحة": 58.7, "أكبر مساحة": 95.0, "أقل ايجار": 2744.88, "أكبر ايجار": 5441.7, "أقل تأمين": 8235, "أكبر تأمين": 16325, "ارضي": 20, "متكرر": 29, "اخير": 26, "اللوكيشن": [{"name": "مجاورة 13-15", "link": "https://maps.app.goo.gl/7kybunyDcggURNXZ8?g_st=aw"}]}, 
+            {"المحافظة": "الشرقية", "المدينة": "العاشر من رمضان", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 1, "Total cells": 8, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3189.33, "أكبر ايجار": 3348.79, "أقل تأمين": 9568, "أكبر تأمين": 10046, "ارضي": 2, "متكرر": 4, "اخير": 2, "اللوكيشن": [{"name": "الحي 12", "link": "https://q.me-qr.com/rj7832w7"}, {"name": "الحي 10", "link": "https://maps.app.goo.gl/UfmZwgVffsRd6Lpx8?g_st=aw"}]}, 
+            {"المحافظة": "الشرقية", "المدينة": "الصالحية الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان اقتصادي", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية", "الشريحه": 2, "Total cells": 9, "أقل مساحة": 94.5, "أكبر مساحة": 94.5, "أقل ايجار": 4792.0, "أكبر ايجار": 5031.6, "أقل تأمين": 14376, "أكبر تأمين": 15095, "ارضي": 4, "متكرر": 5, "اخير": 0, "اللوكيشن": [{"name": "الحي الرابع", "link": "https://maps.app.goo.gl/aMpMm2JyJgQY1m2MA"}]},
+
+            {"المحافظة": "القليوبية", "المدينة": "العبور الجديدة", "جديه الحجز": 15000, "المشروع": "فالي تاورز ايست", "المحافظات المتاح لها التقديم ": "القليوبية - بورسعيد  شمال سيناء - جنوب سيناء", "الشريحه": 2, "Total cells": 659, "أقل مساحة": 89.0, "أكبر مساحة": 116.0, "أقل ايجار": 6802.23, "أكبر ايجار": 11572.91, "أقل تأمين": 20407, "أكبر تأمين": 34719, "ارضي": 118, "متكرر": 392, "اخير": 149, "اللوكيشن": [{"name": "منطقة الحي الرابع عشر", "link": "https://maps.app.goo.gl/2mLadCzYQFKRxtJJA?g_st=aw"}]}, 
+            {"المحافظة": "القليوبية", "المدينة": "العبور", "جديه الحجز": 10000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "القليوبية فقط", "الشريحه": 1, "Total cells": 127, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3434.12, "أكبر ايجار": 3605.82, "أقل تأمين": 10302, "أكبر تأمين": 10817, "ارضي": 33, "متكرر": 65, "اخير": 29, "اللوكيشن": [{"name": "منطقة الحي الثامن", "link": "https://maps.app.goo.gl/FGLQ1yvKHqvwwNKg8?g_st=aw"}, {"name": "منطقة الحي الترفيهي", "link": "https://maps.app.goo.gl/k39kYog8u3KihzWP6"}]}, 
+            {"المحافظة": "القليوبية", "المدينة": "العبور", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "القليوبية فقط", "الشريحه": 1, "Total cells": 10, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2715.22, "أكبر ايجار": 2850.98, "أقل تأمين": 8146, "أكبر تأمين": 8553, "ارضي": 3, "متكرر": 5, "اخير": 2, "اللوكيشن": [{"name": "منطقة المستقبل", "link": "https://maps.app.goo.gl/3TMSmhiuWPvtEctq5?g_st=aw"}]}, 
+            {"المحافظة": "القليوبية", "المدينة": "العبور", "جديه الحجز": 15000, "المشروع": "روضة العبور", "المحافظات المتاح لها التقديم ": "القليوبية فقط", "الشريحه": 2, "Total cells": 682, "أقل مساحة": 76.74, "أكبر مساحة": 100.0, "أقل ايجار": 5767.57, "أكبر ايجار": 7810.46, "أقل تأمين": 17303, "أكبر تأمين": 23431, "ارضي": 100, "متكرر": 468, "اخير": 114, "اللوكيشن": [{"name": "منطقة السلام ثان", "link": "https://maps.app.goo.gl/CSf1SDNEE4ybY8yp8?g_st=aw"}]}, 
+
+            {"المحافظة": "الجيزة", "المدينة": "أكتوبر الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "الجيزة فقط", "الشريحه": 3, "Total cells": 85, "أقل مساحة": 106.0, "أكبر مساحة": 118.0, "أقل ايجار": 9005.8, "أكبر ايجار": 12592.26, "أقل تأمين": 27017, "أكبر تأمين": 37777, "ارضي": 19, "متكرر": 54, "اخير": 12, "اللوكيشن": [{"name": "جنوب طريق الواحات", "link": "https://maps.app.goo.gl/34kiXQugU3xmRtfp8"}]}, 
+
+            {"المحافظة": "الدقهلية", "المدينة": "المنصورة الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "الدقهلية - دمياط", "الشريحه": 3, "Total cells": 106, "أقل مساحة": 106.0, "أكبر مساحة": 133.0, "أقل ايجار": 11494.63, "أكبر ايجار": 14977.22, "أقل تأمين": 34484, "أكبر تأمين": 44932, "ارضي": 28, "متكرر": 62, "اخير": 16, "اللوكيشن": [{"name": "المنطقة الأولى المرحلة 1", "link": "https://maps.app.goo.gl/6FzZoaPjzYQqtqdx8?g_st=ac"}, {"name": "المنطقة السادسة المرحلة 2", "link": "https://maps.app.goo.gl/grqMtpmwDaZHoniX6?g_st=ac"}]}, 
+
+            {"المحافظة": "مطروح", "المدينة": "العلمين الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "مرسى مطروح", "الشريحه": 3, "Total cells": 50, "أقل مساحة": 110.0, "أكبر مساحة": 130.0, "أقل ايجار": 13479.98, "أكبر ايجار": 16231.47, "أقل تأمين": 40440, "أكبر تأمين": 48694, "ارضي": 10, "متكرر": 19, "اخير": 21, "اللوكيشن": [{"name": "جنوب المنطقة الشاطئية", "link": "https://q.me-qr.com/xwy73jmx"}]}, 
+            {"المحافظة": "مطروح", "المدينة": "العلمين الجديدة", "جديه الحجز": 15000, "المشروع": "إسكان مميز", "المحافظات المتاح لها التقديم ": "مرسى مطروح", "الشريحه": 2, "Total cells": 48, "أقل مساحة": 95.0, "أكبر مساحة": 100.0, "أقل ايجار": 7327.77, "أكبر ايجار": 7858.98, "أقل تأمين": 21983, "أكبر تأمين": 23577, "ارضي": 8, "متكرر": 32, "اخير": 8, "اللوكيشن": [{"name": "جنوب المنطقة الشاطئية", "link": "https://q.me-qr.com/9r158ix9"}]}, 
+
+            {"المحافظة": "دمياط", "المدينة": "دمياط الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "دمياط فقط", "الشريحه": 3, "Total cells": 15, "أقل مساحة": 115.0, "أكبر مساحة": 115.0, "أقل ايجار": 11577.47, "أكبر ايجار": 12040.57, "أقل تأمين": 34732, "أكبر تأمين": 36122, "ارضي": 6, "متكرر": 0, "اخير": 9, "اللوكيشن": [{"name": "جنوب الحي الأول", "link": "https://maps.app.goo.gl/kDvsPvLc3n8a2UhD7"}, {"name": "غرب جامعة دمياط", "link": "https://maps.app.goo.gl/41vdjM8yqGW7iaTB7"}]}, 
+            {"المحافظة": "دمياط", "المدينة": "دمياط الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "دمياط فقط", "الشريحه": 1, "Total cells": 7, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3398.81, "أكبر ايجار": 3398.81, "أقل تأمين": 10196, "أكبر تأمين": 10196, "ارضي": 1, "متكرر": 0, "اخير": 6, "اللوكيشن": [{"name": "المجاورة 6 - الحي الرابع", "link": "https://maps.app.goo.gl/AsVznD4XtnGcwjot9"}, {"name": "جنوب الحي الرابع", "link": "https://maps.app.goo.gl/RWW9YLmyEnQAsr8z6"}]}, 
+            {"المحافظة": "دمياط", "المدينة": "دمياط الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان شباب", "المحافظات المتاح لها التقديم ": "دمياط فقط", "الشريحه": 1, "Total cells": 9, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3669.49, "أكبر ايجار": 3669.49, "أقل تأمين": 11008, "أكبر تأمين": 11008, "ارضي": 9, "متكرر": 0, "اخير": 0, "اللوكيشن": [{"name": "المجاورة 6 - الحي الرابع", "link": "https://maps.app.goo.gl/AsVznD4XtnGcwjot9"}]},
+
+            {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 5000, "المشروع": "متخللات الحي الأول - اقتصادي/مجاورة 1", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 1, "Total cells": 8, "أقل مساحة": 59.0, "أكبر مساحة": 79.0, "أقل ايجار": 2534.95, "أكبر ايجار": 3473.74, "أقل تأمين": 7605, "أكبر تأمين": 10421, "ارضي": 2, "متكرر": 3, "اخير": 3, "اللوكيشن": [{"name": "متخللات الحي الأول", "link": "https://maps.app.goo.gl/w1oQUkbXticP9Gc96?g_st=aw"}]}, 
+            {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 5000, "المشروع": "متخللات الحي الأول - منخفض التكاليف/مجاورة 1", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 1, "Total cells": 24, "أقل مساحة": 78.2, "أكبر مساحة": 78.2, "أقل ايجار": 3313.13, "أكبر ايجار": 3478.79, "أقل تأمين": 9939, "أكبر تأمين": 10436, "ارضي": 8, "متكرر": 9, "اخير": 7, "اللوكيشن": [{"name": "متخللات الحي الأول", "link": "https://maps.app.goo.gl/w1oQUkbXticP9Gc96?g_st=aw"}]}, 
+            {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 15000, "المشروع": "متخللات الحي الأول - متوسط/فوق متوسط", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 2, "Total cells": 18, "أقل مساحة": 77.0, "أكبر مساحة": 140.0, "أقل ايجار": 5032.82, "أكبر ايجار": 8947.25, "أقل تأمين": 15098, "أكبر تأمين": 26842, "ارضي": 4, "متكرر": 4, "اخير": 10, "اللوكيشن": [{"name": "متخللات الحي الأول", "link": "https://maps.app.goo.gl/w1oQUkbXticP9Gc96?g_st=aw"}]}, 
+            {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الإسكندرية فقط", "الشريحه": 1, "Total cells": 194, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3099.88, "أكبر ايجار": 3254.88, "أقل تأمين": 9300, "أكبر تأمين": 9765, "ارضي": 27, "متكرر": 129, "اخير": 38}, 
+
+            {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 15000, "المشروع": "دار مصر", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 3, "Total cells": 35, "أقل مساحة": 130.0, "أكبر مساحة": 150.0, "أقل ايجار": 12008.93, "أكبر ايجار": 14687.84, "أقل تأمين": 36027, "أكبر تأمين": 44064, "ارضي": 5, "متكرر": 12, "اخير": 18, "اللوكيشن": [{"name": "المنطقة 17", "link": "https://maps.app.goo.gl/WBfgmUVxRnYrtEsY9"}]}, 
+            {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 1, "Total cells": 67, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3135.19, "أكبر ايجار": 3291.95, "أقل تأمين": 9406, "أكبر تأمين": 9876, "ارضي": 0, "متكرر": 66, "اخير": 1, "اللوكيشن": [{"name": "المنطقة 23", "link": "https://maps.app.goo.gl/5i4AM38yk2VSRB2u7"}]}, 
+            {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 1, "Total cells": 37, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2619.38, "أكبر ايجار": 2750.35, "أقل تأمين": 7858, "أكبر تأمين": 8251, "ارضي": 17, "متكرر": 16, "اخير": 4, "اللوكيشن": [{"name": "المنطقة 12", "link": "https://maps.app.goo.gl/pPdB34fyRpHi2wax9"}]}, 
+            {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "الغربية - المنوفية", "الشريحه": 1, "Total cells": 25, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3295.25, "أكبر ايجار": 3460.01, "أقل تأمين": 9886, "أكبر تأمين": 10380, "ارضي": 10, "متكرر": 6, "اخير": 9, "اللوكيشن": [{"name": "المنطقة 12", "link": "https://maps.app.goo.gl/siFNSy1DtiNVnxBM9"}]}, 
+
+            {"المحافظة": "البحيرة", "المدينة": "رشيد الجديدة", "جديه الحجز": 10000, "المشروع": "طابع ساحلي", "المحافظات المتاح لها التقديم ": "كفر الشيخ - البحيرة", "الشريحه": 2, "Total cells": 260, "أقل مساحة": 90.0, "أكبر مساحة": 93.0, "أقل ايجار": 3525.78, "أكبر ايجار": 4725.47, "أقل تأمين": 10577, "أكبر تأمين": 14176, "ارضي": 45, "متكرر": 152, "اخير": 63, "اللوكيشن": [{"name": "الإسكان المميز الساحلي", "link": "https://maps.app.goo.gl/e3Xxx6Ran3SY65vc9"}]}, 
+
+            {"المحافظة": "الفيوم", "المدينة": "الفيوم الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الفيوم فقط", "الشريحه": 1, "Total cells": 11, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2803.31, "أكبر ايجار": 2943.48, "أقل تأمين": 8410, "أكبر تأمين": 8830, "ارضي": 7, "متكرر": 4, "اخير": 0, "اللوكيشن": [{"name": "الحي الثالث", "link": "https://maps.app.goo.gl/6FGvSmFyTZdsSHLp6?g_st=iw"}]}, 
+
+            {"المحافظة": "بني سويف", "المدينة": "الفشن الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان متميز", "المحافظات المتاح لها التقديم ": "بني سويف فقط", "الشريحه": 2, "Total cells": 256, "أقل مساحة": 116.0, "أكبر مساحة": 150.0, "أقل ايجار": 4762.07, "أكبر ايجار": 6650.47, "أقل تأمين": 14286, "أكبر تأمين": 19951, "ارضي": 64, "متكرر": 128, "اخير": 64, "اللوكيشن": [{"name": "الحي الأول", "link": "https://maps.app.goo.gl/hiJW6V3Yx7kM32Yd9?g_st=aw"}]}, 
+            {"المحافظة": "بني سويف", "المدينة": "بني سويف الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "بني سويف فقط", "الشريحه": 1, "Total cells": 60, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3154.02, "أكبر ايجار": 3311.72, "أقل تأمين": 9462, "أكبر تأمين": 9935, "ارضي": 9, "متكرر": 42, "اخير": 9, "اللوكيشن": [{"name": "ابني بيتك", "link": "https://maps.apple.com/place?auid=13725712022905663870&coordinate=29.010283,31.086651&lsp=7618&name=Marked%20Location&map=h"}]}, 
+
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 2, "Total cells": 20, "أقل مساحة": 106.0, "أكبر مساحة": 115.0, "أقل ايجار": 7966.67, "أكبر ايجار": 9151.51, "أقل تأمين": 23900, "أكبر تأمين": 27455, "ارضي": 5, "متكرر": 5, "اخير": 10, "اللوكيشن": [{"name": "الـ 140 فدان - التوسعات الشمالية", "link": "https://maps.app.goo.gl/qkHNKwskGKuYXJfaA?g_st=aw"}]}, 
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 485, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2873.93, "أكبر ايجار": 3017.62, "أقل تأمين": 8622, "أكبر تأمين": 9053, "ارضي": 88, "متكرر": 316, "اخير": 81, "اللوكيشن": [{"name": "الحي الرابع", "link": "https://maps.app.goo.gl/8r5hXqQeB9mhXXx3A?g_st=aw"}]}, 
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 28, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2668.36, "أكبر ايجار": 2801.78, "أقل تأمين": 8005, "أكبر تأمين": 8405, "ارضي": 13, "متكرر": 10, "اخير": 5, "اللوكيشن": [{"name": "الحي الرابع", "link": "https://maps.app.goo.gl/8r5hXqQeB9mhXXx3A?g_st=aw"}]}, 
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 11, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3262.29, "أكبر ايجار": 3425.41, "أقل تأمين": 9787, "أكبر تأمين": 10276, "ارضي": 2, "متكرر": 5, "اخير": 4, "اللوكيشن": [{"name": "الحي الرابع", "link": "https://maps.app.goo.gl/8r5hXqQeB9mhXXx3A?g_st=aw"}]}, 
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان الشباب", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 2, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3509.44, "أكبر ايجار": 3509.44, "أقل تأمين": 10528, "أكبر تأمين": 10528, "ارضي": 0, "متكرر": 2, "اخير": 0}, 
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان منخفض التكاليف", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 1, "Total cells": 3, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2560.88, "أكبر ايجار": 2560.88, "أقل تأمين": 7683, "أكبر تأمين": 7683, "ارضي": 3, "متكرر": 0, "اخير": 0, "اللوكيشن": [{"name": "الحي الأول", "link": "https://maps.app.goo.gl/VhyCKYQr2Dk6M4bB7?g_st=aw"}]}, 
+            {"المحافظة": "المنيا", "المدينة": "ملوي الجديدة", "جديه الحجز": 10000, "المشروع": "جنة", "المحافظات المتاح لها التقديم ": "المنيا فقط", "الشريحه": 2, "Total cells": 650, "أقل مساحة": 100.0, "أكبر مساحة": 161.0, "أقل ايجار": 4901.56, "أكبر ايجار": 8200.99, "أقل تأمين": 14705, "أكبر تأمين": 24603, "ارضي": 77, "متكرر": 483, "اخير": 90, "اللوكيشن": [{"name": "الحي الأول", "link": "https://maps.app.goo.gl/7MdS9QsgFpBmbzWs9?g_st=ac"}]}, 
+
+            {"المحافظة": "أسيوط", "المدينة": "ناصر الجديدة", "جديه الحجز": 15000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "أسيوط - الوادي الجديد", "الشريحه": 2, "Total cells": 117, "أقل مساحة": 106.0, "أكبر مساحة": 118.0, "أقل ايجار": 7496.59, "أكبر ايجار": 8836.16, "أقل تأمين": 22490, "أكبر تأمين": 26508, "ارضي": 8, "متكرر": 42, "اخير": 67, "اللوكيشن": [{"name": "الحي الأول", "link": "https://maps.app.goo.gl/ajnfrp3XsWPB1PteA?g_st=aw"}]}, 
+            {"المحافظة": "أسيوط", "المدينة": "أسيوط الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "أسيوط - الوادي الجديد", "الشريحه": 1, "Total cells": 240, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3175.2, "أكبر ايجار": 3333.97, "أقل تأمين": 9526, "أكبر تأمين": 10002, "ارضي": 48, "متكرر": 144, "اخير": 48, "اللوكيشن": [{"name": "الحي الأول", "link": "https://q.me-qr.com/rn6h2tyx"}]}, 
+            {"المحافظة": "أسيوط", "المدينة": "أسيوط الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "أسيوط - الوادي الجديد", "الشريحه": 1, "Total cells": 55, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2942.18, "أكبر ايجار": 3089.29, "أقل تأمين": 8827, "أكبر تأمين": 9268, "ارضي": 3, "متكرر": 26, "اخير": 26, "اللوكيشن": [{"name": "الامتداد المستقبلي", "link": "https://q.me-qr.com/ksq82fnz"}]}, 
+
+            {"المحافظة": "سوهاج", "المدينة": "سوهاج الجديدة", "جديه الحجز": 10000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "سوهاج فقط", "الشريحه": 1, "Total cells": 4, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3347.03, "أكبر ايجار": 3514.38, "أقل تأمين": 10041, "أكبر تأمين": 10543, "ارضي": 0, "متكرر": 2, "اخير": 2, "اللوكيشن": [{"name": "الحي الأول", "link": "https://maps.app.goo.gl/553zxi6jjMzvsCGp8"}, {"name": "عمارات البندق (ابني بيتك)", "link": "https://maps.app.goo.gl/HMd84mtMBgmEKbGN9"}]}, 
+
+            {"المحافظة": "قنا", "المدينة": "قنا الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "قنا - البحر الأحمر", "الشريحه": 1, "Total cells": 105, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2768.01, "أكبر ايجار": 2906.41, "أقل تأمين": 8304, "أكبر تأمين": 8719, "ارضي": 9, "متكرر": 71, "اخير": 25, "اللوكيشن": [{"name": "الحي الأول", "link": "https://maps.app.goo.gl/rCyUnB9xvqVdSJou9"}]}, 
+
+            {"المحافظة": "الأقصر", "المدينة": "طيبة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان المستقبل", "المحافظات المتاح لها التقديم ": "الأقصر فقط", "الشريحه": 1, "Total cells": 76, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 3069.29, "أكبر ايجار": 3222.75, "أقل تأمين": 9208, "أكبر تأمين": 9668, "ارضي": 24, "متكرر": 23, "اخير": 29, "اللوكيشن": [{"name": "الحي الثاني", "link": "https://maps.app.goo.gl/5sX8vZm6W7cQwde87?g_st=aw"}]}, 
+            {"المحافظة": "الأقصر", "المدينة": "طيبة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "الأقصر فقط", "الشريحه": 1, "Total cells": 11, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2604.48, "أكبر ايجار": 2604.48, "أقل تأمين": 7813, "أكبر تأمين": 7813, "ارضي": 6, "متكرر": 0, "اخير": 5, "اللوكيشن": [{"name": "الحي الثاني", "link": "https://maps.app.goo.gl/RAF3saWBgFM1Y5za6?g_st=aw"}]}, 
+            {"المحافظة": "الأقصر", "المدينة": "طيبة الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان قومي", "المحافظات المتاح لها التقديم ": "الأقصر فقط", "الشريحه": 1, "Total cells": 9, "أقل مساحة": 63.0, "أكبر مساحة": 63.0, "أقل ايجار": 2909.23, "أكبر ايجار": 3054.69, "أقل تأمين": 8728, "أكبر تأمين": 9164, "ارضي": 3, "متكرر": 6, "اخير": 0, "اللوكيشن": [{"name": "الحي الثاني", "link": "https://maps.app.goo.gl/5sX8vZm6W7cQwde87?g_st=aw"}]}, 
+
+            {"المحافظة": "أسوان", "المدينة": "أسوان الجديدة", "جديه الحجز": 5000, "المشروع": "إسكان مطور", "المحافظات المتاح لها التقديم ": "اسوان فقط", "الشريحه": 1, "Total cells": 26, "أقل مساحة": 57.0, "أكبر مساحة": 57.0, "أقل ايجار": 2589.57, "أكبر ايجار": 2719.05, "أقل تأمين": 7769, "أكبر تأمين": 8157, "ارضي": 14, "متكرر": 9, "اخير": 3, "اللوكيشن": [{"name": "الحي الثاني", "link": "https://maps.app.goo.gl/hiciBk8mb4L4nd6a8?g_st=iw"}]}
+        ];
+        
+        const futureData = [
+            {"المحافظة": "الإسكندرية", "المدينة": "برج العرب الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الإسكندرية - مطروح", "الشريحه": 2, "Total cells": 240.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1748250, "أكبر_سعر": 1748250, "اللوكيشن": [{"name": "الحي العاشر", "link": "https://maps.app.goo.gl/dCNotvaHBivftPcT9"}]}, 
+            {"المحافظة": "الجيزة", "المدينة": "أكتوبر الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الجيزة - القاهرة", "الشريحه": 2, "Total cells": 1000.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1776600, "أكبر_سعر": 1776600, "اللوكيشن": [{"name": "منطقة غرب المطار", "link": "https://maps.google.com/local?q=29.823436,30.797796"}]}, 
+            {"المحافظة": "الجيزة", "المدينة": "أكتوبر الجديدة", "جديه الحجز": 50000, "المشروع": "سكن مصر", "المحافظات المتاح لها التقديم ": "الجيزة - القاهرة", "الشريحه": 3, "Total cells": 600.0, "أقل_مساحة": 103, "أكبر_مساحة": 126, "أقل_سعر": 2195445, "أكبر_سعر": 2685690, "اللوكيشن": [{"name": "منطقة غرب المطار", "link": "https://maps.google.com/local?q=29.823436,30.797796"}]}, 
+            {"المحافظة": "الشرقية", "المدينة": "حدائق العاشر", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الشرقية - الإسماعيلية - بوسعيد - شمال سيناء - جنوب سيناء - السويس", "الشريحه": 2, "Total cells": 860.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1748250, "أكبر_سعر": 1748250, "اللوكيشن": [{"name": "شمال قرية المعرفة", "link": "https://maps.app.goo.gl/RxBA6kdHPPkLfE4f9"}]}, 
+            {"المحافظة": "القليوبية", "المدينة": "العبور الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "القليوبية - القاهرة", "الشريحه": 2, "Total cells": 600.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1795500, "أكبر_سعر": 1795500, "اللوكيشن": [{"name": "شمال الحي الخامس عشر", "link": "https://maps.app.goo.gl/3EDkb6CwwbSr3XFi6"}]}, 
+            {"المحافظة": "المنوفية", "المدينة": "السادات", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "المنوفية - الغربية - الدقهلية - دمياط - كفر الشيخ", "الشريحه": 2, "Total cells": 480.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1738800, "أكبر_سعر": 1738800, "اللوكيشن": [{"name": "حي الفردوس", "link": "https://maps.app.goo.gl/FrLYYtjxdBF6FU9e6"}]}, 
+            {"المحافظة": "المنيا", "المدينة": "المنيا الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "المنيا - الفيوم - بني سويف", "الشريحه": 2, "Total cells": 360.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1691550, "أكبر_سعر": 1691550, "اللوكيشن": [{"name": "الحي الثالث - الامتداد", "link": "https://maps.app.goo.gl/nSzrX6ojLBhbEe9G9"}]}, 
+            {"المحافظة": "سوهاج", "المدينة": "سوهاج الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز ", "المحافظات المتاح لها التقديم ": "سوهاج - قنا - الاقصر - اسوان - البحر الاحمر ", "الشريحه": 2, "Total cells": 360.0, "أقل_مساحة": 90, "أكبر_مساحة": 90, "أقل_سعر": 1672650, "أكبر_سعر": 1672650, "اللوكيشن": [{"name": "منطقة المستقبل", "link": "https://maps.app.goo.gl/rFZFuwFw4KvWAGxr9"}, {"name": "منطقة الإسكان", "link": "https://maps.app.goo.gl/Wu27ygHtZKDQHkJe9"}]}, 
+            {"المحافظة": "مطروح", "المدينة": "العلمين الجديدة", "جديه الحجز": 50000, "المشروع": "اسكان متميز", "المحافظات المتاح لها التقديم ": "الإسكندرية - مطروح", "الشريحه": 3, "Total cells": 500.0, "أقل_مساحة": 95, "أكبر_مساحة": 100, "أقل_سعر": 2194500, "أكبر_سعر": 2310000}
+        ];
+
+        function getIneligibleWhatsAppLink(gov, status, income) {
+            const modeText = currentMode === 'immediate' ? 'الاستلام الفوري' : 'استلام خلال 36 شهر';
+            const minIncome = 5000;
+            const maxIncome = status === "أعزب" ? 33000 : 44000;
+            
+            let reason = "";
+            if (income < minIncome) reason = "أقل من الحد الأدنى المسموح به";
+            else if (income > maxIncome) reason = "يتخطى الحد الأقصى المسموح به";
+
+            const msg = `أهلاً شركة مسارك للاستشارات العقارية، أرغب في التقديم وهذه بياناتي:\n- النظام المطلوب: ${modeText}\n- محافظة محل الإقامة: ${gov}\n- إجمالي الدخل الشهري: ${formatNumber(income)} ج.م (تنبيه: الدخل ${reason})\n- الحالة الاجتماعية: ${status}\n\nبرجاء إفادتي بالبدائل الحكومية المتاحة التي تناسبني.`;
+            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+        }
+
+        function getEligibleWhatsAppLink(projectName, govName, bracket, status, income) {
+            const modeText = currentMode === 'immediate' ? 'الاستلام الفوري' : 'استلام خلال 36 شهر';
+            const msg = `أهلاً شركة مسارك للاستشارات العقارية، أرغب في التقديم وهذه بياناتي:\n- النظام المطلوب: ${modeText} (${projectName} - شريحة ${bracket})\n- محافظة محل الإقامة: ${govName}\n- إجمالي الدخل الشهري: ${formatNumber(income)} ج.م\n- الحالة الاجتماعية: ${status}\n\nبرجاء التواصل للبدء في تجهيز أوراقي معكم.`;
+            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+        }
+
         function searchUnits() {
             const gov = document.getElementById("gov").value;
             const status = document.getElementById("status").value;
-            const income = parseInt(document.getElementById("income").value);
+            const incomeValue = document.getElementById("income").value;
             
+            const resultArea = document.getElementById("resultArea");
+            const alertBox = document.getElementById("alertBox");
+            const cardsContainer = document.getElementById("cardsContainer");
+            const infoContainer = document.getElementById("important-info-container");
+            const loadingOverlay = document.getElementById("loadingOverlay");
+
+            if (!incomeValue || incomeValue.trim() === "") {
+                resultArea.classList.remove("hidden");
+                alertBox.className = "p-5 rounded-2xl mb-6 font-bold text-center bg-red-50 text-red-700 border border-red-200 shadow-sm";
+                alertBox.innerHTML = `⚠️ برجاء كتابة إجمالي الدخل الشهري أولاً عشان نقدر نحدد شريحتك والمشاريع المتاحة ليك.`;
+                cardsContainer.innerHTML = "";
+                infoContainer.classList.add("hidden");
+                return;
+            }
+
+            const income = parseInt(incomeValue);
             let bracket = null;
 
             if (status === "أعزب") {
@@ -258,15 +650,8 @@ The content of the body element is displayed in your browser.
                 else if (income >= 28001 && income <= 44000) bracket = 3;
             }
 
-            const resultArea = document.getElementById("resultArea");
-            const alertBox = document.getElementById("alertBox");
-            const cardsContainer = document.getElementById("cardsContainer");
-
-            resultArea.classList.remove("hidden");
-            cardsContainer.innerHTML = "";
-
             if (bracket === null) {
-                // رسالة عدم التطابق الجديدة والمحسنة ديناميكياً
+                resultArea.classList.remove("hidden");
                 const waLink = getIneligibleWhatsAppLink(gov, status, income);
                 alertBox.className = "p-5 rounded-2xl mb-6 text-center bg-orange-50 border border-orange-200 shadow-sm";
                 alertBox.innerHTML = `
@@ -276,31 +661,71 @@ The content of the body element is displayed in your browser.
                         تواصل معنا لاكتشاف البدائل الحكومية
                     </a>
                 `;
+                cardsContainer.innerHTML = "";
+                infoContainer.classList.add("hidden");
                 return;
             }
 
-            const activeData = (currentMode === 'immediate') ? immediateData : futureData;
-            const normalizedGov = normalizeArabic(gov);
-            
-            const filtered = activeData.filter(item => {
-                const availableGovs = item["المحافظات المتاح لها التقديم "] || "";
-                const normalizedTarget = normalizeArabic(availableGovs);
-                return item["الشريحه"] == bracket && normalizedTarget.includes(normalizedGov);
-            });
-
-            if (filtered.length === 0) {
-                alertBox.className = "p-5 rounded-2xl mb-6 font-bold text-center bg-yellow-50 text-yellow-800 border border-yellow-200 shadow-sm";
-                alertBox.innerHTML = `⚠️ أنت ضمن شريحة (${bracket}) ولكن لا يوجد مشاريع متاحة حالياً لمحافظتك في هذا النظام.`;
-            } else {
-                alertBox.className = "p-5 rounded-2xl mb-6 font-bold text-center bg-green-50 text-green-800 border border-green-200 shadow-sm";
-                alertBox.innerHTML = `🎉 ممتاز! أنت مستوفي لشروط التقديم في شريحة (${bracket}) ووجدنا <strong>${filtered.length}</strong> مشروع متاح لك.`;
-                
-                if (currentMode === 'immediate') {
-                    renderImmediateCards(filtered, bracket, status, income, cardsContainer);
-                } else {
-                    renderFutureCards(filtered, bracket, status, income, cardsContainer);
-                }
+            if (currentMode === 'future' && bracket === 1) {
+                resultArea.classList.remove("hidden");
+                alertBox.className = "p-5 rounded-2xl mb-6 text-center bg-red-50 border border-red-200 shadow-sm";
+                alertBox.innerHTML = `
+                    <div class="font-black text-xl text-red-700 mb-3">عفواً، هذا النظام غير متاح لشريحتك!</div>
+                    <div class="text-gray-700 mb-5 font-bold text-lg leading-relaxed">
+                        نظام الاستلام خلال 36 شهراً متاح فقط للشريحة الثانية والثالثة.<br>
+                        دخلك الحالي يضعك ضمن <strong class="text-brand-blue border-b-2 border-brand-orange pb-1">الشريحة الأولى</strong>.
+                    </div>
+                    <button onclick="selectMode('immediate'); document.getElementById('income').value='${incomeValue}'; searchUnits();" class="w-full md:w-auto inline-block bg-brand-blue hover:bg-[#0a1f3d] text-white font-bold py-3 px-8 rounded-xl transition shadow-md">
+                        حولني لنظام الاستلام الفوري (المتاح لي) 👉
+                    </button>
+                `;
+                cardsContainer.innerHTML = "";
+                infoContainer.classList.add("hidden");
+                return;
             }
+
+            loadingOverlay.classList.remove("hidden");
+            loadingOverlay.style.display = "flex";
+
+            setTimeout(() => {
+                loadingOverlay.classList.add("hidden");
+                loadingOverlay.style.display = "none";
+                resultArea.classList.remove("hidden");
+                cardsContainer.innerHTML = "";
+                infoContainer.classList.add("hidden");
+
+                const activeData = (currentMode === 'immediate') ? immediateData : futureData;
+                const normalizedGov = normalizeArabic(gov);
+                
+                const filtered = activeData.filter(item => {
+                    const availableGovs = item["المحافظات المتاح لها التقديم "] || "";
+                    const normalizedTarget = normalizeArabic(availableGovs);
+                    return item["الشريحه"] == bracket && normalizedTarget.includes(normalizedGov);
+                });
+
+                let reasonText = `تم تصنيفك في الشريحة (${bracket}) لأنك (${status}) ودخلك يقع ضمن الشريحة.`;
+
+                if (filtered.length === 0) {
+                    alertBox.className = "p-5 rounded-2xl mb-6 font-bold text-center bg-yellow-50 text-yellow-800 border border-yellow-200 shadow-sm";
+                    alertBox.innerHTML = `⚠️ أنت ضمن شريحة (${bracket}) ولكن لا يوجد مشاريع متاحة حالياً لمحافظتك في هذا النظام.`;
+                } else {
+                    alertBox.className = "p-5 rounded-2xl mb-6 text-center bg-green-50 border border-green-200 shadow-sm";
+                    alertBox.innerHTML = `
+                        <div class="text-xl md:text-2xl font-black text-green-800 mb-3">🎉 ممتاز! وجدنا <strong class="text-brand-orange">${filtered.length}</strong> مشروع متاح لك.</div>
+                        <div class="text-sm md:text-base bg-white inline-block px-4 py-2.5 rounded-xl border border-green-200 text-gray-700 shadow-sm">
+                            💡 <strong class="text-brand-blue">توضيح:</strong> <span class="font-bold text-gray-600">${reasonText}</span>
+                        </div>
+                    `;
+                    
+                    if (currentMode === 'immediate') {
+                        renderImmediateCards(filtered, bracket, status, income, cardsContainer);
+                    } else {
+                        renderFutureCards(filtered, bracket, status, income, cardsContainer);
+                    }
+                    
+                    infoContainer.classList.remove("hidden");
+                }
+            }, 1200); 
         }
 
         function getIncomeDetails(bracket, status) {
@@ -312,53 +737,122 @@ The content of the body element is displayed in your browser.
 
         function renderImmediateCards(filtered, bracket, status, income, container) {
             filtered.forEach(item => {
-                const totalCells = item["Total cells"] || "-";
+                const totalCellsStr = item["Total cells"] || "0";
+                const totalCells = parseInt(totalCellsStr) || 0;
+                const ground = item["ارضي"] || 0;
+                const typical = item["متكرر"] || 0;
+                const last = item["اخير"] || 0;
+                
+                const specialNeedsQuota = Math.ceil(totalCells * 0.05);
                 let incomeDetails = getIncomeDetails(bracket, status);
                 const statusLabel = status === "أعزب" ? "الأعزب" : "الأسرة";
                 const waLink = getEligibleWhatsAppLink(item["المشروع"], item["المحافظة"], bracket, status, income);
 
-                const card = `
-                <div class="bg-white rounded-2xl shadow-md border-t-4 border-brand-blue overflow-hidden hover:shadow-xl transition flex flex-col">
-                    <div class="p-5 flex justify-between items-center border-b border-gray-100 bg-gray-50">
-                        <div>
-                            <h3 class="font-black text-2xl brand-blue">${item["المحافظة"]}</h3>
-                            <p class="text-gray-500 text-sm mt-1 font-bold">مدينة: ${item["المدينة"]}</p>
+                const locations = item["اللوكيشن"] || [];
+                let locationHtml = "";
+                let shareLocText = "";
+                
+                if (locations.length > 0) {
+                    locationHtml = `<div class="mt-3 flex flex-wrap gap-2">`;
+                    locations.forEach(loc => {
+                        locationHtml += `
+                        <a href="${loc.link}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1.5 rounded-lg transition shadow-sm">
+                            📍 ${loc.name}
+                        </a>`;
+                    });
+                    locationHtml += `</div>`;
+                    shareLocText = "\n📍 المواقع على الخريطة:\n" + locations.map(l => `- ${l.name}: ${l.link}`).join("\n");
+                }
+
+                const shareText = `شاهدت وحدة مناسبة لي في طرح الإسكان (استلام فوري) 🏢\n- المحافظة: ${item["المحافظة"]} (${item["المدينة"]})\n- المشروع: ${item["المشروع"]}\n- المساحة: ${formatRange(item["أقل مساحة"], item["أكبر مساحة"])} م²\n- الإيجار الشهري: ${formatRange(item["أقل ايجار"], item["أكبر ايجار"])} ج.م\n- جدية الحجز: ${formatNumber(item["جديه الحجز"])} ج.م${shareLocText}\n\nما رأيك في هذه التفاصيل؟`;
+                const shareLink = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
+
+                let unitsHtml = `
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                        <span class="text-gray-500 font-bold">إجمالي الوحدات المتاحة</span>
+                        <div class="text-left">
+                            <span class="font-black text-brand-blue text-xl" dir="ltr">${formatNumber(totalCells)} <span class="text-xs text-gray-500 font-medium">وحدة</span></span>
                         </div>
-                        <span class="bg-brand-orange text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-sm">${item["المشروع"]}</span>
+                    </div>`;
+
+                if (isSpecialNeeds && totalCells > 0) {
+                    unitsHtml = `
+                    <div class="flex justify-between items-center bg-blue-50 p-2.5 rounded-lg border border-blue-100 mb-3">
+                        <span class="text-brand-blue font-bold text-sm">حصتك كذوي همم (5%)</span>
+                        <span class="font-black text-brand-blue text-xl" dir="ltr">${specialNeedsQuota} <span class="text-xs font-medium">وحدة</span></span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                        <span class="text-gray-400 font-bold text-xs">من إجمالي وحدات المشروع</span>
+                        <span class="font-bold text-gray-400 text-sm" dir="ltr">${formatNumber(totalCells)} <span class="text-[10px]">وحدة</span></span>
+                    </div>`;
+                }
+
+                const card = `
+                <div class="card-container bg-white rounded-2xl shadow-md border-t-4 border-brand-blue overflow-hidden hover:shadow-xl transition flex flex-col relative">
+                    <div class="p-5 flex flex-col border-b border-gray-100 bg-gray-50">
+                        <div class="flex justify-between items-start w-full">
+                            <div>
+                                <h3 class="font-black text-2xl brand-blue">${item["المحافظة"]}</h3>
+                                <p class="text-gray-500 text-sm mt-1 font-bold">مدينة: ${item["المدينة"]}</p>
+                            </div>
+                            <span class="bg-brand-orange text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-sm whitespace-nowrap">${item["المشروع"]}</span>
+                        </div>
+                        ${locationHtml}
                     </div>
                     <div class="bg-gray-50 border-b border-gray-100 p-3 text-center">
                         <p class="text-gray-800 text-xs md:text-sm font-bold">💡 مقتصر على الشريحة (${item["الشريحه"]})</p>
                         <p class="text-gray-500 text-xs font-medium mt-1">(${statusLabel}: ${incomeDetails})</p>
                     </div>
                     <div class="p-6 space-y-4 flex-grow">
-                        <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                            <span class="text-gray-500 font-bold">الوحدات المتاحة</span>
-                            <div class="text-left">
-                                <div class="font-black text-xl brand-blue" dir="ltr">${formatNumber(totalCells)} <span class="text-xs text-gray-500">وحدة</span></div>
+                        <div class="flex flex-col gap-2">
+                            ${unitsHtml}
+                            <div class="flex gap-2 justify-end text-[11px] font-bold text-gray-500 mb-3 -mt-2">
+                                <span class="bg-gray-50 border border-gray-100 px-2 py-1 rounded">أرضي: <span class="text-gray-700">${ground}</span></span>
+                                <span class="bg-gray-50 border border-gray-100 px-2 py-1 rounded">متكرر: <span class="text-gray-700">${typical}</span></span>
+                                <span class="bg-gray-50 border border-gray-100 px-2 py-1 rounded">أخير: <span class="text-gray-700">${last}</span></span>
                             </div>
                         </div>
+
                         <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                            <span class="text-gray-500 font-bold">المساحة (م²)</span>
-                            <span class="font-black text-gray-800 text-lg" dir="ltr">${formatRange(item["أقل مساحة"], item["أكبر مساحة"])}</span>
+                            <span class="text-gray-500 font-bold">المساحة المتاحة</span>
+                            <span class="font-black text-gray-800 text-lg" dir="ltr">${formatRange(item["أقل مساحة"], item["أكبر مساحة"])} م²</span>
                         </div>
+                        
                         <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                            <span class="text-gray-500 font-bold">مبلغ التأمين</span>
-                            <span class="font-black text-gray-800 text-lg" dir="ltr">${formatRange(item["أقل تأمين"], item["أكبر تأمين"])} <span class="text-xs font-medium">ج.م</span></span>
+                            <span class="text-gray-500 font-bold">الإيجار الشهري للعام الأول</span>
+                            <div class="text-left">
+                                <span class="font-black text-green-600 text-xl block" dir="ltr">${formatRange(item["أقل ايجار"], item["أكبر ايجار"])} <span class="text-xs font-medium">ج.م</span></span>
+                                <span class="text-[10px] text-gray-400 font-bold block mt-1">*غير شامل الصيانة | تضاف زيادة 10% سنوياً</span>
+                            </div>
                         </div>
+
                         <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                            <span class="text-gray-500 font-bold">الإيجار الشهري</span>
-                            <span class="font-black text-green-600 text-xl" dir="ltr">${formatRange(item["أقل ايجار"], item["أكبر ايجار"])} <span class="text-xs font-medium">ج.م</span></span>
+                            <span class="text-gray-500 font-bold text-lg">جدية الحجز (المقدم)</span>
+                            <div class="text-left">
+                                <span class="font-black text-red-600 text-xl block" dir="ltr">${formatNumber(item["جديه الحجز"])} <span class="text-xs font-bold">ج.م</span></span>
+                                <span class="text-[10px] text-gray-500 font-bold block mt-1">+ 500 ج.م رسوم كراسة لا تُرد</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center pb-2">
-                            <span class="text-gray-500 font-bold text-lg">جدية الحجز</span>
-                            <span class="font-black text-red-600 text-xl" dir="ltr">${formatNumber(item["جديه الحجز"])} <span class="text-xs font-bold">ج.م</span></span>
+                        
+                        <div class="bg-blue-50 p-3 rounded-lg flex items-center gap-2 border border-blue-100">
+                            <span class="text-brand-blue text-lg">🎯</span>
+                            <p class="text-xs font-bold text-brand-blue leading-relaxed">خطوتك الحالية هي التقديم لدخول القرعة العلنية، وباقي الإجراءات تتم بعد فوزك بالشقة.</p>
                         </div>
                     </div>
-                    <!-- زر الواتساب (CTA) -->
-                    <div class="p-5 border-t border-gray-100 bg-white">
-                        <a href="${waLink}" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 transition shadow-md">
-                            تواصل معنا لتجهيز أوراق التقديم
+                    <div class="p-5 border-t border-gray-100 bg-white" data-html2canvas-ignore="true">
+                        <a href="${waLink}" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 md:py-4 rounded-xl flex justify-center items-center gap-2 transition shadow-md text-sm md:text-base px-2">
+                            تواصل معانا لتجهيز الاوراق
                         </a>
+                        <div class="flex gap-2 mt-3">
+                            <a href="${shareLink}" target="_blank" class="w-1/2 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-bold py-2.5 rounded-xl flex justify-center items-center gap-1.5 transition shadow-sm text-xs md:text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                                مشاركة
+                            </a>
+                            <button onclick="captureCard(this, '${item["المحافظة"]} - ${item["المدينة"]}')" class="w-1/2 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-bold py-2.5 rounded-xl flex justify-center items-center gap-1.5 transition shadow-sm text-xs md:text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                حفظ كصورة
+                            </button>
+                        </div>
                     </div>
                 </div>`;
                 container.innerHTML += card;
@@ -367,49 +861,118 @@ The content of the body element is displayed in your browser.
 
         function renderFutureCards(filtered, bracket, status, income, container) {
             filtered.forEach(item => {
-                const totalCells = item["Total cells"] || "-";
+                const totalCellsStr = item["Total cells"] || "0";
+                const totalCells = parseInt(totalCellsStr) || 0;
+                
+                const specialNeedsQuota = Math.ceil(totalCells * 0.05);
                 let incomeDetails = getIncomeDetails(bracket, status);
                 const statusLabel = status === "أعزب" ? "الأعزب" : "الأسرة";
                 const waLink = getEligibleWhatsAppLink(item["المشروع"], item["المحافظة"], bracket, status, income);
 
-                const card = `
-                <div class="bg-white rounded-2xl shadow-md border-t-4 border-brand-orange overflow-hidden hover:shadow-xl transition flex flex-col">
-                    <div class="p-5 flex justify-between items-center border-b border-gray-100 bg-gray-50">
-                        <div>
-                            <h3 class="font-black text-2xl brand-blue">${item["المحافظة"]}</h3>
-                            <p class="text-gray-500 text-sm mt-1 font-bold">مدينة: ${item["المدينة"]}</p>
+                const locations = item["اللوكيشن"] || [];
+                let locationHtml = "";
+                let shareLocText = "";
+
+                if (locations.length > 0) {
+                    locationHtml = `<div class="mt-3 flex flex-wrap gap-2">`;
+                    locations.forEach(loc => {
+                        locationHtml += `
+                        <a href="${loc.link}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1.5 rounded-lg transition shadow-sm">
+                            📍 ${loc.name}
+                        </a>`;
+                    });
+                    locationHtml += `</div>`;
+                    shareLocText = "\n📍 المواقع على الخريطة:\n" + locations.map(l => `- ${l.name}: ${l.link}`).join("\n");
+                }
+
+                const shareText = `شاهدت وحدة مناسبة لي في طرح الإسكان (استلام خلال 36 شهر) 🏗\n- المحافظة: ${item["المحافظة"]} (${item["المدينة"]})\n- المشروع: ${item["المشروع"]}\n- المساحات: ${formatRange(item["أقل_مساحة"], item["أكبر_مساحة"])} م²\n- متوسط السعر: ${formatRange(item["أقل_سعر"], item["أكبر_سعر"])} ج.م\n- جدية الحجز: ${formatNumber(item["جديه الحجز"])} ج.م${shareLocText}\n\nما رأيك في هذه التفاصيل؟`;
+                const shareLink = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
+
+                let unitsHtml = `
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                        <span class="text-gray-500 font-bold">إجمالي الوحدات المتاحة</span>
+                        <div class="text-left">
+                            <span class="font-black text-brand-blue text-xl" dir="ltr">${formatNumber(totalCells)} <span class="text-xs text-gray-500 font-medium">وحدة</span></span>
                         </div>
-                        <span class="bg-brand-blue text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-sm">${item["المشروع"]}</span>
+                    </div>`;
+
+                if (isSpecialNeeds && totalCells > 0) {
+                    unitsHtml = `
+                    <div class="flex justify-between items-center bg-blue-50 p-2.5 rounded-lg border border-blue-100 mb-3">
+                        <span class="text-brand-blue font-bold text-sm">حصتك كذوي همم (5%)</span>
+                        <span class="font-black text-brand-blue text-xl" dir="ltr">${specialNeedsQuota} <span class="text-xs font-medium">وحدة</span></span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                        <span class="text-gray-400 font-bold text-xs">من إجمالي وحدات المشروع</span>
+                        <span class="font-bold text-gray-400 text-sm" dir="ltr">${formatNumber(totalCells)} <span class="text-[10px]">وحدة</span></span>
+                    </div>`;
+                }
+
+                const card = `
+                <div class="card-container bg-white rounded-2xl shadow-md border-t-4 border-brand-orange overflow-hidden hover:shadow-xl transition flex flex-col relative">
+                    <div class="p-5 flex flex-col border-b border-gray-100 bg-gray-50">
+                        <div class="flex justify-between items-start w-full">
+                            <div>
+                                <h3 class="font-black text-2xl brand-blue">${item["المحافظة"]}</h3>
+                                <p class="text-gray-500 text-sm mt-1 font-bold">مدينة: ${item["المدينة"]}</p>
+                            </div>
+                            <span class="bg-brand-blue text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-sm whitespace-nowrap">${item["المشروع"]}</span>
+                        </div>
+                        ${locationHtml}
                     </div>
                     <div class="bg-gray-50 border-b border-gray-100 p-3 text-center">
                         <p class="text-gray-800 text-xs md:text-sm font-bold">💡 مقتصر على الشريحة (${item["الشريحه"]})</p>
                         <p class="text-gray-500 text-xs font-medium mt-1">(${statusLabel}: ${incomeDetails})</p>
                     </div>
                     <div class="p-6 space-y-4 flex-grow">
-                        <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                            <span class="text-gray-500 font-bold">إجمالي الوحدات</span>
-                            <div class="text-left">
-                                <div class="font-black text-xl brand-blue" dir="ltr">${formatNumber(totalCells)} <span class="text-xs text-gray-500">وحدة</span></div>
+                        <div class="flex flex-col gap-2">
+                            ${unitsHtml}
+                            <div class="text-left mt-1 mb-2">
+                                <span class="text-[10px] font-bold text-gray-400 bg-gray-50 border border-gray-100 px-2 py-1 rounded-md">توزيع الأدوار غير محدد بكراسة الشروط</span>
                             </div>
                         </div>
+
                         <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                             <span class="text-gray-500 font-bold">المساحة المتاحة (م²)</span>
                             <span class="font-black text-gray-800 text-lg" dir="ltr">${formatRange(item["أقل_مساحة"], item["أكبر_مساحة"])}</span>
                         </div>
+                        
                         <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                             <span class="text-gray-500 font-bold">متوسط سعر الوحدة</span>
-                            <span class="font-black text-gray-800 text-xl" dir="ltr">${formatRange(item["أقل_سعر"], item["أكبر_سعر"])} <span class="text-xs font-medium">ج.م</span></span>
+                            <div class="text-left">
+                                <span class="font-black text-gray-800 text-xl block" dir="ltr">${formatRange(item["أقل_سعر"], item["أكبر_سعر"])} <span class="text-xs font-medium">ج.م</span></span>
+                                <span class="text-[10px] text-gray-400 font-bold block mt-1">*الأسعار قابلة للزيادة بحد أقصى 20%</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center pb-2">
-                            <span class="text-gray-500 font-bold text-lg">مقدم جدية الحجز</span>
-                            <span class="font-black text-red-600 text-xl" dir="ltr">${formatNumber(item["جديه الحجز"])} <span class="text-xs font-bold">ج.م</span></span>
+
+                        <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                            <span class="text-gray-500 font-bold text-lg">جدية الحجز (المقدم)</span>
+                            <div class="text-left">
+                                <span class="font-black text-red-600 text-xl block" dir="ltr">${formatNumber(item["جديه الحجز"])} <span class="text-xs font-bold">ج.م</span></span>
+                                <span class="text-[10px] text-gray-500 font-bold block mt-1">+ 1000 ج.م رسوم دراسة لا تُرد</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-50 p-3 rounded-lg flex items-start gap-2 border border-orange-100 mt-2">
+                            <span class="text-brand-orange text-sm">⏳</span>
+                            <p class="text-xs font-bold text-gray-700 leading-relaxed">يُسدد قسط ربع سنوي <strong class="text-red-600">30,000 ج.م</strong> حتى الاستلام، والإيجار يضاف عليه 10% زيادة سنوية.</p>
                         </div>
                     </div>
-                    <!-- زر الواتساب (CTA) -->
-                    <div class="p-5 border-t border-gray-100 bg-white">
-                        <a href="${waLink}" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 transition shadow-md">
-                            تواصل معنا لتجهيز أوراق التقديم
+                    
+                    <div class="p-5 border-t border-gray-100 bg-white" data-html2canvas-ignore="true">
+                        <a href="${waLink}" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 md:py-4 rounded-xl flex justify-center items-center gap-2 transition shadow-md text-sm md:text-base px-2">
+                            تواصل معانا لتجهيز الاوراق
                         </a>
+                        <div class="flex gap-2 mt-3">
+                            <a href="${shareLink}" target="_blank" class="w-1/2 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-bold py-2.5 rounded-xl flex justify-center items-center gap-1.5 transition shadow-sm text-xs md:text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                                مشاركة
+                            </a>
+                            <button onclick="captureCard(this, '${item["المحافظة"]} - ${item["المدينة"]}')" class="w-1/2 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-bold py-2.5 rounded-xl flex justify-center items-center gap-1.5 transition shadow-sm text-xs md:text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                حفظ كصورة
+                            </button>
+                        </div>
                     </div>
                 </div>`;
                 container.innerHTML += card;
